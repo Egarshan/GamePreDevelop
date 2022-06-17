@@ -24,7 +24,7 @@ public class Inventory {
 
     private InventoryItem[] inventoryItems;
 
-    public Inventory(Camera camera, CorridorScene corridorScene) {
+    public Inventory(Camera camera) {
         this.camera = camera;
 
         frame = ResourcesClass.getResources().get(18)[0];

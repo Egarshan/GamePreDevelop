@@ -26,9 +26,11 @@ public class Dialogs extends Text {
     private String dialog;
     private int n, k, i, count1, count2, speaker1Count, speaker2Count;
 
+    private Player player;
+
     private GameCamera camera;
 
-    public Dialogs(GameCamera camera) {
+    public Dialogs(GameCamera camera, Player player) {
         this.camera = camera;
         draw = false;
 
@@ -61,6 +63,8 @@ public class Dialogs extends Text {
         count2 = 1;
         speaker1Count = 1;
         speaker2Count = 1;
+
+        this.player = player;
     }
 
     public void update() {
@@ -75,10 +79,10 @@ public class Dialogs extends Text {
                     }
                     if (dialogs.get(0).get(n).isArray()) {
                         if (dialogs.get(0).get(n).size == 1) {
-                            setTextLabel(dialogs.get(0).get(n).name.substring(0, dialogs.get(0).get(n).name.length() - 1) + "\n" + getText(dialogs, n, Player.getMask()).asString());
+                            setTextLabel(dialogs.get(0).get(n).name.substring(0, dialogs.get(0).get(n).name.length() - 1) + "\n" + getText(dialogs, n, player.getMask().getCurrentMask()).asString());
                             n++;
                         } else {
-                            switch (Player.getMask()) {
+                            switch (player.getMask().getCurrentMask()) {
                                 case "anger":
                                     k = 0;
                                     break;

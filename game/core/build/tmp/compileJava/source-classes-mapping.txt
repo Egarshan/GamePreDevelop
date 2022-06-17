@@ -1,0 +1,78 @@
+com/mygdx/game/ResourcesClass.java
+ com.mygdx.game.ResourcesClass
+com/mygdx/game/Corridor/Flowers.java
+ com.mygdx.game.Corridor.Flowers
+com/mygdx/game/Menu/MenuCamera.java
+ com.mygdx.game.Menu.MenuCamera
+com/mygdx/game/InventoryItem.java
+ com.mygdx.game.InventoryItem
+com/mygdx/game/Corridor/Hammer.java
+ com.mygdx.game.Corridor.Hammer
+com/mygdx/game/Corridor/Photo.java
+ com.mygdx.game.Corridor.Photo
+com/mygdx/game/Corridor/Key.java
+ com.mygdx.game.Corridor.Key
+com/mygdx/game/Corridor/RubbishBin.java
+ com.mygdx.game.Corridor.RubbishBin
+com/mygdx/game/Corridor/DoorOpen.java
+ com.mygdx.game.Corridor.DoorOpen
+com/mygdx/game/Mask.java
+ com.mygdx.game.Mask
+com/mygdx/game/Corridor/DoorClose.java
+ com.mygdx.game.Corridor.DoorClose
+com/mygdx/game/Text.java
+ com.mygdx.game.Text
+com/mygdx/game/Menu/MenuFont.java
+ com.mygdx.game.Menu.MenuFont
+com/mygdx/game/AudioPlayer.java
+ com.mygdx.game.AudioPlayer
+com/mygdx/game/Corridor/MaskAnger.java
+ com.mygdx.game.Corridor.MaskAnger
+com/mygdx/game/Corridor/GameCamera.java
+ com.mygdx.game.Corridor.GameCamera
+com/mygdx/game/Menu/MenuEventListener.java
+ com.mygdx.game.Menu.MenuEventListener
+com/mygdx/game/Data.java
+ com.mygdx.game.Data
+com/mygdx/game/Reactions.java
+ com.mygdx.game.Reactions
+ com.mygdx.game.Reactions$1
+com/mygdx/game/DarkBackground.java
+ com.mygdx.game.DarkBackground
+com/mygdx/game/Corridor/CorridorScene.java
+ com.mygdx.game.Corridor.CorridorScene
+com/mygdx/game/Hud.java
+ com.mygdx.game.Hud
+com/mygdx/game/Menu/MenuScene.java
+ com.mygdx.game.Menu.MenuScene
+com/mygdx/game/Corridor/ExitConfirm.java
+ com.mygdx.game.Corridor.ExitConfirm
+com/mygdx/game/Inventory.java
+ com.mygdx.game.Inventory
+com/mygdx/game/NoiseBackground.java
+ com.mygdx.game.NoiseBackground
+com/mygdx/game/MaskSelector.java
+ com.mygdx.game.MaskSelector
+com/mygdx/game/Menu/MenuBackground.java
+ com.mygdx.game.Menu.MenuBackground
+com/mygdx/game/Menu/MenuLoader.java
+ com.mygdx.game.Menu.MenuLoader
+com/mygdx/game/Menu/MenuHud.java
+ com.mygdx.game.Menu.MenuHud
+com/mygdx/game/Corridor/CorridorEventListener.java
+ com.mygdx.game.Corridor.CorridorEventListener
+com/mygdx/game/Item.java
+ com.mygdx.game.Item
+com/mygdx/game/Corridor/CorridorLoader.java
+ com.mygdx.game.Corridor.CorridorLoader
+com/mygdx/game/MyGdxGame.java
+ com.mygdx.game.MyGdxGame
+com/mygdx/game/Diary.java
+ com.mygdx.game.Diary
+com/mygdx/game/Corridor/Player.java
+ com.mygdx.game.Corridor.Player
+ com.mygdx.game.Corridor.Player$1
+com/mygdx/game/Dialogs.java
+ com.mygdx.game.Dialogs
+com/mygdx/game/Corridor/CorridorBackground.java
+ com.mygdx.game.Corridor.CorridorBackground

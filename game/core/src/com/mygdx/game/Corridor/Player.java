@@ -1,6 +1,7 @@
 package com.mygdx.game.Corridor;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,13 +11,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import com.mygdx.game.*;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class Player {
-
     private Sprite[] stayAnimFrames, walkAnimFrames, hitAnimFrames, takeAnimFrames;
-    private Animation<Sprite> stayAnim, walkAnim, hitAnim, takeAnim;
+    private Animation<Sprite> stayAnim, walkAnim, hitAnim, takeAnim, maskAnim;
     private TextureRegion currentFrame;
     private Vector2 position, speed, speed0, destination;
     private float width, height, width0;
@@ -28,9 +27,15 @@ public class Player {
     private GameCamera camera;
     private RubbishBin bin;
     private Flowers flowers;
-    private static String mask;
     private Reactions reactions;
     private String reactionName;
+
+    private Mask mask;
+    private TextureRegion[] maskTextures;
+
+    private boolean walkingSound, actionSound;
+
+    private final float SOUND_VOLUME = 0.5f;
 
     public Player(CorridorScene corridorScene, GameCamera camera, RubbishBin bin, Flowers flowers, Reactions reactions) {
         this.corridorScene = corridorScene;
@@ -38,11 +43,12 @@ public class Player {
         this.bin = bin;
         this.flowers = flowers;
         this.reactions = reactions;
-        mask = Mask.anger;
+        mask = new Mask();
         stayAnimFrames = new Sprite[45];
         walkAnimFrames = new Sprite[18];
         hitAnimFrames = new Sprite[37];
         takeAnimFrames = new Sprite[17];
+
         for(int i = 0; i < stayAnimFrames.length; i++) {
             stayAnimFrames[i] = new Sprite(ResourcesClass.getResources().get(2)[i]);
         }
@@ -55,10 +61,12 @@ public class Player {
         for(int i = 0; i < takeAnimFrames.length; i++) {
             takeAnimFrames[i] = new Sprite(ResourcesClass.getResources().get(6)[i]);
         }
+
         stayAnim = new Animation<>(0.033f, stayAnimFrames);
         walkAnim = new Animation<>(0.033f, walkAnimFrames);
         hitAnim = new Animation<>(0.02f, hitAnimFrames);
         takeAnim = new Animation<>(0.033f, takeAnimFrames);
+
 
         for (Sprite stayAnimFrame : stayAnimFrames) {
             stayAnimFrame.flip(true, false);
@@ -100,6 +108,16 @@ public class Player {
         reactionName = "";
 
         standTimer = new Timer();
+
+        maskTextures = new TextureRegion[2];
+        maskTextures[0] = ResourcesClass.getResources().get(21)[0];
+        maskTextures[1] = ResourcesClass.getResources().get(21)[1];
+
+        for (TextureRegion mask: maskTextures)
+            mask.flip(true,false);
+
+        walkingSound = false;
+        actionSound = false;
     }
 
     public void update(float deltaTime) {
@@ -118,6 +136,10 @@ public class Player {
         height = width*1.364f;
 
         if(stand) {
+            if (walkingSound) {
+                AudioPlayer.getSounds()[0].stop();
+                walkingSound = false;
+            }
             startTimer();
         } else {
             stopTimer();
@@ -152,6 +174,11 @@ public class Player {
             for (Sprite takeAnimFrame : takeAnimFrames) {
                 takeAnimFrame.flip(true, false);
             }
+
+            for (TextureRegion mask : maskTextures) {
+                mask.flip(true, false);
+            }
+
             stand = false;
             walk = true;
             speed0.set(speed);
@@ -179,15 +206,48 @@ public class Player {
                 } else {
                     if(!reactions.isReactionEmpty()) {
                         reactions.setDraw(true);
-                        if(Objects.equals(reactionName, "hammer")) {
+                        if(Objects.equals(reactionName, "hammer") && !actionSound) {
                             isTakeAnim = true;
                             walk = false;
                             reactionName = "";
                             corridorScene.getItems()[5].setVisible(false);
                             corridorScene.getItems()[5].setIsTaken(true);
+
+                            AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                            actionSound = true;
+                        }
+                        else if(Objects.equals(reactionName, "mask") && !actionSound) {
+                            isTakeAnim = true;
+                            walk = false;
+                            reactionName = "";
+                            corridorScene.getItems()[6].setVisible(false);
+                            corridorScene.getItems()[6].setIsTaken(true);
+                            mask.takeMask("anger");
+                            corridorScene.getHud().setIsShowMask(true);
+
+                            AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                            actionSound = true;
+                        }
+                        else if(Objects.equals(reactionName, "honor_board") && !actionSound) {
+                            AudioPlayer.getSounds()[1].play(SOUND_VOLUME);
+                            actionSound = true;
+                        }
+                        else if(Objects.equals(reactionName, "hammer_honor_board") && !actionSound) {
+                            walk = false;
+                            isHitAnim = true;
+                            AudioPlayer.getSounds()[2].play(SOUND_VOLUME);
+                            corridorScene.getItems()[7].setVisible(true);
+                            actionSound = true;
+                        }
+                        else if(Objects.equals(reactionName, "photo") && !actionSound) {
+                            corridorScene.getItems()[4].setVisible(false);
+                            corridorScene.getHud().setIsShowPhoto(true);
+
+                            AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                            actionSound = true;
                         }
                     }
-                    if(!isTakeAnim) {
+                    if(!isTakeAnim && !isHitAnim) {
                         walk = false;
                         stand = true;
                     }
@@ -205,34 +265,104 @@ public class Player {
                 } else {
                     if(!reactions.isReactionEmpty()) {
                         reactions.setDraw(true);
-                        if(Objects.equals(reactionName, "hammer")) {
+                        if(Objects.equals(reactionName, "hammer") && !actionSound) {
                             isTakeAnim = true;
                             walk = false;
                             reactionName = "";
                             corridorScene.getItems()[5].setVisible(false);
                             corridorScene.getItems()[5].setIsTaken(true);
+
+                            AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                            actionSound = true;
+                        }
+                        else if(Objects.equals(reactionName, "mask") && !actionSound) {
+                            isTakeAnim = true;
+                            walk = false;
+                            reactionName = "";
+                            corridorScene.getItems()[6].setVisible(false);
+                            corridorScene.getItems()[6].setIsTaken(true);
+                            mask.takeMask("anger");
+                            corridorScene.getHud().setIsShowMask(true);
+
+                            AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                            actionSound = true;
+                        }
+                        else if(Objects.equals(reactionName, "honor_board") && !actionSound) {
+                            AudioPlayer.getSounds()[1].play(SOUND_VOLUME);
+                            actionSound = true;
+                        }
+                        else  if(Objects.equals(reactionName, "hammer_honor_board") && !actionSound) {
+                            walk = false;
+                            isHitAnim = true;
+                            AudioPlayer.getSounds()[2].play(SOUND_VOLUME);
+                            corridorScene.getItems()[7].setVisible(true);
+                            actionSound = true;
+                        }
+                        else if(Objects.equals(reactionName, "photo") && !actionSound) {
+                            corridorScene.getItems()[4].setVisible(false);
+                            corridorScene.getHud().setIsShowPhoto(true);
+
+                            AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                            actionSound = true;
                         }
                     }
-                    if(!isTakeAnim) {
+                    if(!isTakeAnim && !isHitAnim) {
                         walk = false;
                         stand = true;
                     }
                     camera.setMoveLeft(false);
                 }
             }
+            if (!walkingSound) {
+                AudioPlayer.getSounds()[0].play(SOUND_VOLUME);
+                walkingSound = true;
+            }
         } else {
             if(intersected) {
                 if(!reactions.isReactionEmpty()) {
                     reactions.setDraw(true);
-                    if(Objects.equals(reactionName, "hammer")) {
+                    if(Objects.equals(reactionName, "hammer") && !actionSound) {
                         isTakeAnim = true;
                         walk = false;
                         reactionName = "";
                         corridorScene.getItems()[5].setVisible(false);
                         corridorScene.getItems()[5].setIsTaken(true);
+
+                        AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                        actionSound = true;
+                    }
+                    else if(Objects.equals(reactionName, "mask") && !actionSound) {
+                        isTakeAnim = true;
+                        walk = false;
+                        reactionName = "";
+                        corridorScene.getItems()[6].setVisible(false);
+                        corridorScene.getItems()[6].setIsTaken(true);
+                        mask.takeMask("anger");
+                        corridorScene.getHud().setIsShowMask(true);
+
+                        AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                        actionSound = true;
+                    }
+                    else if(Objects.equals(reactionName, "honor_board") && !actionSound) {
+                        AudioPlayer.getSounds()[1].play(SOUND_VOLUME);
+                        actionSound = true;
+                    }
+                    else  if(Objects.equals(reactionName, "hammer_honor_board") && !actionSound) {
+                        walk = false;
+                        isHitAnim = true;
+                        AudioPlayer.getSounds()[2].play(SOUND_VOLUME);
+                        corridorScene.getItems()[7].setVisible(true);
+                        actionSound = true;
+                    }
+                    else if(Objects.equals(reactionName, "photo") && !actionSound) {
+                        corridorScene.getItems()[4].setVisible(false);
+                        corridorScene.getHud().setIsShowPhoto(true);
+
+                        AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                        actionSound = true;
                     }
                 }
-                if(!isTakeAnim) {
+                if(!isTakeAnim && !isHitAnim) {
                     walk = false;
                     stand = true;
                 }
@@ -298,8 +428,9 @@ public class Player {
             currentFrame = stayAnim.getKeyFrames()[0];
         }
         MyGdxGame.batch.draw(currentFrame, position.x, position.y, width, height);
-    }
 
+        MyGdxGame.batch.draw(getCurrentMaskTexture(), position.x, position.y, width, height);
+    }
 
     public void dispose() {
        Data.savePlayerPosition(position.x, position.y);
@@ -361,6 +492,8 @@ public class Player {
     public void setDestination(int x, int y) {
         stand = false;
         walk = true;
+        actionSound = false;
+        reactionName = "";
         destination.set(x, y);
         if(position.x+(width/2f) < x) {
             speed.x = (float)(250*Math.abs(position.x+(width/2f)-destination.x)/Math.sqrt(Math.pow((position.x+(width/2f)-destination.x), 2)+Math.pow((position.y-destination.y), 2)));
@@ -398,15 +531,21 @@ public class Player {
         return speed;
     }
 
-    public static void setMask(String m) {
-        mask = m;
+    public Polygon getPolygon() {
+        return polygon;
     }
 
-    public static String getMask() {
+    public Mask getMask() {
         return mask;
     }
 
-    public Polygon getPolygon() {
-        return polygon;
+    private TextureRegion getCurrentMaskTexture() {
+        switch (mask.getCurrentMask()){
+            case "sad":
+                return maskTextures[0];
+            case "anger":
+                return maskTextures[1];
+        }
+        return maskTextures[0];
     }
 }

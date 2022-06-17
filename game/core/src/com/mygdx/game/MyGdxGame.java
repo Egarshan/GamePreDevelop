@@ -3,7 +3,6 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -11,14 +10,16 @@ import com.mygdx.game.Menu.MenuLoader;
 
 public class MyGdxGame extends Game {
 
-	private static Pixmap cursor, cursorHand;
+	private static Pixmap cursor, cursorHand, cursorHammer, cursorHammerGlow;
 	public static int WIDTH, HEIGHT;
 	public static SpriteBatch batch;
 	public static Data data;
 
-	public static boolean curIsHand;
+	public static AudioPlayer audioPlayer;
 
-	private Music musicBackground;
+	public static boolean curIsChanged, cursorIsItem;
+
+	public static String currentCursor;
 	
 	@Override
 	public void create () {
@@ -27,10 +28,11 @@ public class MyGdxGame extends Game {
 		WIDTH = d.width;
 		HEIGHT = d.height;
 
-		curIsHand = false;
+		curIsChanged = false;
+		cursorIsItem = false;
 
-		//Gdx.graphics.setFullscreenMode(d);
-		//Gdx.graphics.setResizable(false);
+//		Gdx.graphics.setFullscreenMode(d);
+//		Gdx.graphics.setResizable(false);
 		
 		batch = new SpriteBatch();
 		data = new Data();
@@ -39,11 +41,15 @@ public class MyGdxGame extends Game {
 		}
 		cursor = new Pixmap(Gdx.files.internal("обычный курсор.png"));
 		cursorHand = new Pixmap(Gdx.files.internal("курсор взятия.png"));
+		cursorHammer = new Pixmap(Gdx.files.internal("Inventory/Молоток_icon.gif"));
+		cursorHammerGlow = new Pixmap(Gdx.files.internal("Inventory/Молоток_icon_glow.gif"));
 
 		Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 1, 1));
 		setScreen(new MenuLoader(this));
 
-		musicBackground = Gdx.audio.newMusic(Gdx.files.internal("sounds/background_music.mp3"));
+		audioPlayer = new AudioPlayer();
+
+		//currentCursor = "simple";
 	}
 
 	@Override
@@ -59,21 +65,34 @@ public class MyGdxGame extends Game {
 	public void dispose () {
 		batch.dispose();
 		cursor.dispose();
+		cursorHand.dispose();
+		cursorHammer.dispose();
 		this.screen.dispose();
 	}
 
-	public static void changeCursor () {
-		if (curIsHand){
-			Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 1, 1));
-			curIsHand = false;
+	public static void changeCursor (String name) {
+		if (!curIsChanged) {
+			curIsChanged = true;
+			switch (name) {
+				case "hand":
+					Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursorHand, 16, 16));
+					currentCursor = "hand";
+					break;
+				case "hammer":
+					Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursorHammer, 64, 64));
+					currentCursor = "hammer";
+					break;
+				case "hammerGlow":
+					Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursorHammerGlow, 64, 64));
+					currentCursor = "hammerGlow";
+					break;
+			}
 		}
 		else {
-			Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursorHand, 1, 1));
-			curIsHand = true;
+			Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 1, 1));
+			currentCursor = "simple";
+			curIsChanged = false;
+			cursorIsItem = false;
 		}
-	}
-
-	public Music getMusicBackground() {
-		return musicBackground;
 	}
 }

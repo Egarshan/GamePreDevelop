@@ -32,6 +32,8 @@ public class CorridorLoader implements Screen {
 
     private TextureRegion[] backgroundAdditional;
 
+    private TextureRegion[] playerMask, maskSelector, maskSelectorButtons, maskSelectorIcons;
+
     public CorridorLoader(MyGdxGame game) {
         this.game = game;
 
@@ -56,6 +58,7 @@ public class CorridorLoader implements Screen {
         manager.load("девочка бьет молотком.png", Texture.class);
         manager.load("девочка берет предмет.png", Texture.class);
         manager.load("items.png", Texture.class);
+        manager.load("glass_broke.png", Texture.class);
         manager.load("Дневник настоящее.png", Texture.class);
         manager.load("Дневник прошлое.png", Texture.class);
         manager.load("diary.png", Texture.class);
@@ -72,8 +75,21 @@ public class CorridorLoader implements Screen {
         manager.load("Inventory/Инвентарь.png", Texture.class);
         manager.load("Inventory/Инвентарь_ячейки.png", Texture.class);
         manager.load("Inventory/Активная ячейка.png", Texture.class);
-        manager.load("Inventory/Молоток_icon.png", Texture.class);
+        manager.load("Inventory/Молоток_icon.gif", Texture.class);
         manager.load("Inventory/Ключ_icon.png", Texture.class);
+
+        manager.load("mask/печаль.png", Texture.class);
+        manager.load("mask/гнев.png", Texture.class);
+
+        manager.load("затемненный экран.png", Texture.class);
+        manager.load("mask/селектор.png", Texture.class);
+        manager.load("mask/селектор_color.png", Texture.class);
+
+        manager.load("mask/селектор_гнев.png", Texture.class);
+        manager.load("mask/селектор_печаль.png", Texture.class);
+
+        manager.load("mask/selector_icons/селектор_гнев_icon.png", Texture.class);
+        manager.load("mask/selector_icons/селектор_печаль_icon.png", Texture.class);
 
         manager.load("полупрозрачный экран.png", Texture.class);
     }
@@ -84,8 +100,9 @@ public class CorridorLoader implements Screen {
         background[0] = new TextureRegion((Texture)manager.get("фон коридора.png"));
         background[1] = new TextureRegion((Texture)manager.get("фон коридора_no_light.png"));
 
-        backgroundAdditional = new TextureRegion[1];
+        backgroundAdditional = new TextureRegion[2];
         backgroundAdditional[0] = new TextureRegion((Texture)manager.get("полупрозрачный экран.png"));
+        backgroundAdditional[1] = new TextureRegion((Texture)manager.get("затемненный экран.png"));
     }
 
     public void unpackDiary() {
@@ -109,7 +126,7 @@ public class CorridorLoader implements Screen {
         inventory[2] = new TextureRegion((Texture)manager.get("Inventory/Активная ячейка.png"));
 
         inventoryIcons = new TextureRegion[2];
-        inventoryIcons[0] = new TextureRegion((Texture)manager.get("Inventory/Молоток_icon.png"));
+        inventoryIcons[0] = new TextureRegion((Texture)manager.get("Inventory/Молоток_icon.gif"));
         inventoryIcons[1] = new TextureRegion((Texture)manager.get("Inventory/Ключ_icon.png"));
     }
 
@@ -299,7 +316,8 @@ public class CorridorLoader implements Screen {
                 new TextureRegion((Texture)manager.get("items.png"), 1, 1, 156, 278), //Мусорка
                 new TextureRegion((Texture)manager.get("items.png"), 1317, 478, 74, 137), //Маска гнева
                 new TextureRegion((Texture)manager.get("items.png"), 159, 139, 66, 140), //Молоток
-                new TextureRegion((Texture)manager.get("items.png"), 664, 293, 53, 61) //Фото Кости
+                new TextureRegion((Texture)manager.get("items.png"), 664, 293, 53, 61), //Фото Кости
+                new TextureRegion((Texture)manager.get("glass_broke.png"))
         };
     }
 
@@ -339,6 +357,26 @@ public class CorridorLoader implements Screen {
         };
     }
 
+    public void unpackMasks() {
+        playerMask = new TextureRegion[2];
+        playerMask[0] = new TextureRegion((Texture)manager.get("mask/печаль.png"));
+        playerMask[1] = new TextureRegion((Texture)manager.get("mask/гнев.png"));
+
+        maskSelector = new TextureRegion[] {
+            new TextureRegion((Texture)manager.get("mask/селектор.png"))
+        };
+
+        maskSelectorButtons = new TextureRegion[] {
+                new TextureRegion((Texture)manager.get("mask/селектор_печаль.png")),
+                new TextureRegion((Texture)manager.get("mask/селектор_гнев.png"))
+        };
+
+        maskSelectorIcons = new TextureRegion[] {
+                new TextureRegion((Texture)manager.get("mask/selector_icons/селектор_печаль_icon.png")),
+                new TextureRegion((Texture)manager.get("mask/selector_icons/селектор_гнев_icon.png")),
+        };
+    }
+
     private void unpackAll() {
         unpackBackground();
         unpackGirlStand();
@@ -352,9 +390,11 @@ public class CorridorLoader implements Screen {
         unpackDiaryPast();
         unpackExitConfirm();
         unpackInventory();
+        unpackMasks();
         ResourcesClass.addResources(background, background, girlStand, girlWalk, items, girlHit, girlTakesItem,
                 diary, diaryText0, interfaceElements, dialogElements, diaryText1, diaryText2, diaryText3,
-                diaryText4, diaryText5, diaryText6, exitConfirm, inventory, inventoryIcons, backgroundAdditional);
+                diaryText4, diaryText5, diaryText6, exitConfirm, inventory, inventoryIcons, backgroundAdditional, playerMask, maskSelector, maskSelectorButtons,
+                maskSelectorIcons);
     }
 
     @Override

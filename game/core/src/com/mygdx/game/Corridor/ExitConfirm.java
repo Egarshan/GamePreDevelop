@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.AudioPlayer;
 import com.mygdx.game.Menu.MenuLoader;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.ResourcesClass;
@@ -82,7 +83,7 @@ public class ExitConfirm {
             }
             if(touchedLeftButton) {
                 game.setScreen(new MenuLoader(game));
-                game.getMusicBackground().pause();
+                AudioPlayer.getMusic()[0].pause();
             }
         } else {
             touchedLeftButton = false;
