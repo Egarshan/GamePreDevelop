@@ -35,6 +35,7 @@ public class Player {
 
     private final float SOUND_VOLUME = 0.5f;
 
+
     public Player(CorridorScene corridorScene, GameCamera camera, RubbishBin bin, Flowers flowers, Reactions reactions) {
         this.corridorScene = corridorScene;
         this.camera = camera;
@@ -46,6 +47,7 @@ public class Player {
         walkAnimFrames = new Sprite[18];
         hitAnimFrames = new Sprite[37];
         takeAnimFrames = new Sprite[17];
+
 
         for (int i = 0; i < stayAnimFrames.length; i++) {
             stayAnimFrames[i] = new Sprite(ResourcesClass.getResources().get(2)[i]);
@@ -242,13 +244,41 @@ public class Player {
                                 corridorScene.getDialog().nextDialog("dialog_1");
                                 DarkBackground.setIsDark(true);
                             } else {
+                                isTakeAnim = true;
+                                walk = false;
                                 corridorScene.getItems()[4].setVisible(false);
                                 corridorScene.getItems()[4].setIsTaken(true);
                                 corridorScene.getHud().setIsShowPhoto(true);
 
                                 AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                                corridorScene.getDialog().nextDialog("dialog_2");
+                                corridorScene.setKeyIsAvailable(true);
                             }
                             actionSound = true;
+                        }
+                        else if (Objects.equals(reactionName, "key") && !actionSound) {
+                            isTakeAnim = true;
+                            walk = false;
+                            AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                            actionSound = true;
+
+                            corridorScene.getItems()[8].setIsTaken(true);
+                        }
+                        else if (Objects.equals(reactionName, "exit_door") && !actionSound) {
+                            isTakeAnim = true;
+                            walk = false;
+                            if (Objects.equals(MyGdxGame.currentCursor, "keyGlow")) {
+                                AudioPlayer.getSounds()[4].play(SOUND_VOLUME);
+                                actionSound = true;
+                                corridorScene.setDoorIsOpen(true);
+                                corridorScene.getItems()[0].setVisible(false);
+                                corridorScene.getItems()[1].setVisible(true);
+                            }
+                            reactionName = "";
+                            MyGdxGame.changeCursor("simple");
+                        }
+                        else if (Objects.equals(reactionName, "finish_game")) {
+                            corridorScene.finishWindow.setDraw(true);
                         }
                     }
                     if (!isTakeAnim && !isHitAnim) {
@@ -306,13 +336,41 @@ public class Player {
                                 corridorScene.getDialog().nextDialog("dialog_1");
                                 DarkBackground.setIsDark(true);
                             } else {
+                                isTakeAnim = true;
+                                walk = false;
                                 corridorScene.getItems()[4].setVisible(false);
                                 corridorScene.getItems()[4].setIsTaken(true);
                                 corridorScene.getHud().setIsShowPhoto(true);
 
                                 AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                                corridorScene.getDialog().nextDialog("dialog_2");
+                                corridorScene.setKeyIsAvailable(true);
                             }
                             actionSound = true;
+                        }
+                        else if (Objects.equals(reactionName, "key") && !actionSound) {
+                            isTakeAnim = true;
+                            walk = false;
+                            AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                            actionSound = true;
+
+                            corridorScene.getItems()[8].setIsTaken(true);
+                        }
+                        else if (Objects.equals(reactionName, "exit_door") && !actionSound) {
+                            isTakeAnim = true;
+                            walk = false;
+                            if (Objects.equals(MyGdxGame.currentCursor, "keyGlow")) {
+                                AudioPlayer.getSounds()[4].play(SOUND_VOLUME);
+                                actionSound = true;
+                                corridorScene.setDoorIsOpen(true);
+                                corridorScene.getItems()[0].setVisible(false);
+                                corridorScene.getItems()[1].setVisible(true);
+                            }
+                            reactionName = "";
+                            MyGdxGame.changeCursor("simple");
+                        }
+                        else if (Objects.equals(reactionName, "finish_game")) {
+                            corridorScene.finishWindow.setDraw(true);
                         }
                     }
                     if (!isTakeAnim && !isHitAnim) {
@@ -367,13 +425,41 @@ public class Player {
                             corridorScene.getDialog().nextDialog("dialog_1");
                             DarkBackground.setIsDark(true);
                         } else {
+                            isTakeAnim = true;
+                            walk = false;
                             corridorScene.getItems()[4].setVisible(false);
                             corridorScene.getItems()[4].setIsTaken(true);
                             corridorScene.getHud().setIsShowPhoto(true);
 
                             AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                            corridorScene.getDialog().nextDialog("dialog_2");
+                            corridorScene.setKeyIsAvailable(true);
                         }
                         actionSound = true;
+                    }
+                    else if (Objects.equals(reactionName, "key") && !actionSound) {
+                        isTakeAnim = true;
+                        walk = false;
+                        AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                        actionSound = true;
+
+                        corridorScene.getItems()[8].setIsTaken(true);
+                    }
+                    else if (Objects.equals(reactionName, "exit_door") && !actionSound) {
+                        isTakeAnim = true;
+                        walk = false;
+                        if (Objects.equals(MyGdxGame.currentCursor, "keyGlow")) {
+                            AudioPlayer.getSounds()[4].play(SOUND_VOLUME);
+                            actionSound = true;
+                            corridorScene.setDoorIsOpen(true);
+                            corridorScene.getItems()[0].setVisible(false);
+                            corridorScene.getItems()[1].setVisible(true);
+                        }
+                        reactionName = "";
+                        MyGdxGame.changeCursor("simple");
+                    }
+                    else if (Objects.equals(reactionName, "finish_game")) {
+                        corridorScene.finishWindow.setDraw(true);
                     }
                 }
                 if (!isTakeAnim && !isHitAnim) {

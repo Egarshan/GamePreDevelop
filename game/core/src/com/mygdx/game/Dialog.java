@@ -30,13 +30,13 @@ public class Dialog extends Text {
     private Label[] answers;
     private int[] emotionIconsIndexes;
 
-    private boolean isShowDialog, isAnswerForm;
+    private boolean isShowDialog, isAnswerForm, isItqueue;
+    private boolean[] hasQueue;
 
     private static JsonValue dialogs;
 
-    private int subDialogCounter, kostyaEmotionIndex, dialogIndex, queueSize, queueIndex;
+    private int subDialogCounter, kostyaEmotionIndex, dialogIndex, currentEmoIndex, queueIndex;
     ;
-    private float dialogLabelBias;
 
     private String speakingCharacter;
 
@@ -110,10 +110,11 @@ public class Dialog extends Text {
 
         subDialogCounter = 0;
         dialogIndex = -1;
-        dialogLabelBias = 5f;
 
-        queueSize = 0;
-        queueIndex = 0;
+        hasQueue = new boolean[8];
+        queueIndex = 1;
+
+        isItqueue = false;
     }
 
     public void update() {
@@ -124,7 +125,7 @@ public class Dialog extends Text {
 
             activePhrasePosition = new Vector2(dialogAreaPosition.x + dialogAreaWidth / 6.7f, dialogAreaPosition.y + dialogAreaHeight / 4 - 40 * 2 * dialogIndex + 65);
 
-            dialogLabel.setBounds(dialogAreaPosition.x + dialogAreaWidth / 6.5f, dialogAreaPosition.y + dialogAreaHeight / dialogLabelBias, dialogAreaWidth / 1.5f, dialogAreaHeight / 1.5f);
+            dialogLabel.setBounds(dialogAreaPosition.x + dialogAreaWidth / 6.5f, dialogAreaPosition.y + dialogAreaHeight / 5, dialogAreaWidth / 1.5f, dialogAreaHeight / 1.5f);
             characterLabel.setBounds(dialogAreaPosition.x + dialogAreaWidth / 6.5f, dialogAreaPosition.y + dialogAreaHeight / 2.5f, dialogAreaWidth / 1.5f, dialogAreaHeight / 1.5f);
 
             for (int i = 0; i < answers.length; i++)
@@ -172,41 +173,88 @@ public class Dialog extends Text {
     public void nextDialog(String dialogName) {
         dialogs = getDialogs(dialogName);
         isShowDialog = true;
+        subDialogCounter = 0;
 
         nextDialogPart();
     }
 
     public void nextDialogPart() {
-//        if (subDialogCounter > 0 && Objects.equals(speakingCharacter, "Алиса"))
-//            System.out.println(checkInnerQueue(subDialogCounter));
+        dialogLabel.setText("");
+        for (Label answer : answers)
+            answer.setText(null);
 
-        speakingCharacter = dialogs.get(0).get(subDialogCounter).name.substring(0, dialogs.get(0).get(subDialogCounter).name.length() - 1);
+        if (hasQueue[currentEmoIndex]) {
+            subDialogCounter--;
+            isAnswerForm = false;
+            if (queueIndex < dialogs.get(0).get(subDialogCounter).get(0).get(currentEmoIndex).get(0).size) {
+                String currentCharacterName = dialogs.get(0).get(subDialogCounter).get(0).get(currentEmoIndex).get(0).get(queueIndex).name;
 
-        if (!Objects.equals(speakingCharacter, "finish dialog")) {
-            if (!Objects.equals(speakingCharacter, "Алиса")) {
-                isAnswerForm = false;
-                kostyaEmotionIndex = Integer.parseInt(dialogs.get(0).get(subDialogCounter).name.substring(dialogs.get(0).get(subDialogCounter).name.length() - 1)) - 1;
-                characterLabel.setText(speakingCharacter);
-                dialogLabel.setText(dialogs.get(0).getString(subDialogCounter));
-
-                subDialogCounter++;
-            } else {
-                dialogLabel.setText("");
-                characterLabel.setText(speakingCharacter);
-                for (Label answer : answers)
-                    answer.setText(null);
-
-                if (queueSize > 0) {
-                    isAnswerForm = false;
-                    dialogLabel.setText(dialogs.get(0).get(subDialogCounter).get(0).get(0).get(0).getString(queueIndex++));
-
-                    if (--queueSize <= 0)
-                        subDialogCounter++;
-
-                } else {
-
-                    queueSize = 0;
+                if (Objects.equals(currentCharacterName, "sad_q")) {
+                    currentEmoIndex = checkMaskPhrase(currentCharacterName.split("_")[0]);
+                    hasQueue[currentEmoIndex] = true;
                     queueIndex = 0;
+                    currentCharacterName = dialogs.get(0).get(subDialogCounter).get(0).get(currentEmoIndex).get(0).get(queueIndex).name;
+                    player.getMask().changeMask(currentEmoIndex);
+
+                    if (Objects.equals(currentCharacterName.substring(0, currentCharacterName.length() - 2), "Костя")) {
+                        characterLabel.setText("Костя");
+                        kostyaEmotionIndex = Integer.parseInt(currentCharacterName.substring(currentCharacterName.length() - 1));
+                    } else
+                        characterLabel.setText("Алиса");
+
+                    dialogLabel.setText(dialogs.get(0).get(subDialogCounter).get(0).get(currentEmoIndex).get(0).getString(queueIndex++));
+                    isItqueue = true;
+                }
+                else {
+                    if (Objects.equals(currentCharacterName.substring(0, currentCharacterName.length() - 2), "Костя")) {
+                        characterLabel.setText("Костя");
+                        kostyaEmotionIndex = Integer.parseInt(currentCharacterName.substring(currentCharacterName.length() - 1));
+                    } else
+                        characterLabel.setText("Алиса");
+
+                    dialogLabel.setText(dialogs.get(0).get(subDialogCounter).get(0).get(currentEmoIndex).get(0).getString(queueIndex++));
+                    isItqueue = true;
+                }
+            } else {
+                for (int i = 0; i < hasQueue.length; i++)
+                    hasQueue[i] = false;
+//                speakingCharacter = dialogs.get(0).get(subDialogCounter).name.substring(0, dialogs.get(0).get(subDialogCounter).name.length() - 1);
+                isItqueue = false;
+                subDialogCounter++;
+                if (Objects.equals(speakingCharacter, "finish dialog"))
+                    finishDialog();
+            }
+        }
+
+        if (!isItqueue) {
+            speakingCharacter = dialogs.get(0).get(subDialogCounter).name.substring(0, dialogs.get(0).get(subDialogCounter).name.length() - 1);
+            if (!Objects.equals(speakingCharacter, "finish dialog")) {
+                if (Objects.equals(speakingCharacter, "Костя") || Objects.equals(speakingCharacter, "Мальчик с фотографии")) {
+                    isAnswerForm = false;
+                    kostyaEmotionIndex = Integer.parseInt(dialogs.get(0).get(subDialogCounter).name.substring(dialogs.get(0).get(subDialogCounter).name.length() - 1)) - 1;
+                    characterLabel.setText(speakingCharacter);
+                    dialogLabel.setText(dialogs.get(0).getString(subDialogCounter));
+
+                    subDialogCounter++;
+                } else {
+                    if (speakingCharacter.contains("_"))
+                        switch (speakingCharacter.split("_")[1]) {
+                            case "anger":
+                                player.getMask().changeMask(1);
+                                characterLabel.setText(speakingCharacter.split("_")[0]);
+                                break;
+                            case "sad":
+                                player.getMask().changeMask(0);
+                                characterLabel.setText(speakingCharacter.split("_")[0]);
+                                break;
+                            case "neutral":
+                                System.out.println("FUCK");
+                                break;
+                            default:
+                                break;
+                        }
+                    else
+                        characterLabel.setText(speakingCharacter);
 
                     if (dialogs.get(0).get(subDialogCounter).size != 0) {
                         isAnswerForm = true;
@@ -215,13 +263,12 @@ public class Dialog extends Text {
                         String phraseName;
                         for (int i = 0; i < size; i++) {
                             phraseName = dialogs.get(0).get(subDialogCounter).get(0).get(i).name;
-
-                            if (Objects.equals(phraseName.substring(phraseName.length() - 2), "_q")) {
+                            if (phraseName.contains("_q")) {
                                 maskInd = checkMaskPhrase(phraseName.substring(0, phraseName.length() - 2));
                                 if (player.getMask().getTakenMasks()[maskInd]) {
-                                    answers[i].setText(dialogs.get(0).get(subDialogCounter).get(0).get(0).get(0).getString(i));
+                                    answers[i].setText(dialogs.get(0).get(subDialogCounter).get(0).get(i).get(0).getString(0));
                                     emotionIconsIndexes[i] = maskInd;
-                                    queueSize = dialogs.get(0).get(subDialogCounter).get(0).get(0).get(0).size - 1;
+                                    hasQueue[i] = true;
                                     queueIndex = 1;
                                 }
                             } else {
@@ -232,16 +279,16 @@ public class Dialog extends Text {
                                 }
                             }
                         }
-                    } else
+                    } else {
                         dialogLabel.setText(dialogs.get(0).getString(subDialogCounter));
-                    if (queueSize == 0)
-                        subDialogCounter++;
+                    }
+                    subDialogCounter++;
                 }
+            } else {
+                finishDialog();
             }
-        } else {
-            DarkBackground.setIsDark(false);
-            isShowDialog = false;
-        }
+        } else
+            subDialogCounter++;
     }
 
     public boolean getIsAnswerForm() {
@@ -261,7 +308,8 @@ public class Dialog extends Text {
     }
 
     public void phraseClicked(int index) {
-        player.getMask().changeMask(emotionIconsIndexes[index]);
+        currentEmoIndex = emotionIconsIndexes[index];
+        player.getMask().changeMask(currentEmoIndex);
         dialogIndex = -1;
         nextDialogPart();
     }
@@ -275,6 +323,11 @@ public class Dialog extends Text {
             default:
                 return -1;
         }
+    }
+
+    private void finishDialog() {
+        DarkBackground.setIsDark(false);
+        isShowDialog = false;
     }
 }
 

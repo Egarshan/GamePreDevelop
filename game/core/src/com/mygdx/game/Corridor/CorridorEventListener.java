@@ -44,8 +44,10 @@ public class CorridorEventListener implements InputProcessor {
     public boolean keyDown(int keycode) {
         switch (keycode) {
             case Input.Keys.ESCAPE:
-                MyGdxGame.changeCursor("simple");
-                exitConfirm.setDraw(true);
+                if (!corridorScene.finishWindow.isDraw()) {
+                    MyGdxGame.changeCursor("simple");
+                    exitConfirm.setDraw(true);
+                }
                 break;
         }
         return false;
@@ -64,7 +66,7 @@ public class CorridorEventListener implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        if (!exitConfirm.isDraw() && !diary.isShowDiary() && !dialog.getIsShowDialog() && !inventory.isShowInventory() && !maskSelector.isShowMaskSelector()) {
+        if (!exitConfirm.isDraw() && !corridorScene.finishWindow.isDraw() && !diary.isShowDiary() && !dialog.getIsShowDialog() && !inventory.isShowInventory() && !maskSelector.isShowMaskSelector()) {
             if (diary.isShowDiary()) {
                 if (screenX >= MyGdxGame.WIDTH / 2f) {
                     diary.setN(diary.getN() + 1);
@@ -77,8 +79,32 @@ public class CorridorEventListener implements InputProcessor {
                     !dialog.getIsShowDialog() && !hud.isCursorOnSmth()) {
                 player.setDestination((int) worldCords.x, (int) Math.min(worldCords.y, 200));
             }
+
+            //exit_door
+            if (checkCursorPosition(corridorScene.getItems()[0].getPosition(), corridorScene.getItems()[0].getWidth(), corridorScene.getItems()[0].getHeight())) {
+                if (MyGdxGame.cursorIsItem) {
+                    if (!isItemCursorPressIsCorrect("keyGlow"))
+                        corridorScene.getReactions().setReaction("non-use");
+                    else
+                        corridorScene.getReactions().setReaction("photo");
+                        player.setReactionName("exit_door");
+                    return true;
+                }
+
+                if (!corridorScene.getDoorIsOpen())
+                    corridorScene.getReactions().setReaction("exit_door");
+                else {
+                    corridorScene.getReactions().setReaction("photo");
+                    player.setReactionName("finish_game");
+                }
+                return true;
+            }
+            else {
+                corridorScene.getReactions().cancelReaction();
+            }
+
             //hammer
-            if (checkCursorPosition(corridorScene.getItems()[5].getPosition(), corridorScene.getItems()[5].getWidth(), corridorScene.getItems()[5].getHeight())) {
+            if (checkCursorPosition(corridorScene.getItems()[5].getPosition(), corridorScene.getItems()[5].getWidth(), corridorScene.getItems()[5].getHeight()) && corridorScene.getMeetIsDone()) {
                 if (MyGdxGame.cursorIsItem) {
                     if (!isItemCursorPressIsCorrect("no"))
                         corridorScene.getReactions().setReaction("non-use");
@@ -151,12 +177,18 @@ public class CorridorEventListener implements InputProcessor {
                 corridorScene.getReactions().cancelReaction();
             }
 
-            //flower_1
+            //flower_with_key
             if (worldCords.x >= 1985 && worldCords.x <= 2055 && worldCords.y >= 210 && worldCords.y <= 420) {
                 if (MyGdxGame.cursorIsItem) {
                     if (!isItemCursorPressIsCorrect("no"))
                         corridorScene.getReactions().setReaction("non-use");
                     MyGdxGame.changeCursor("simple");
+                    return true;
+                }
+
+                if (corridorScene.getKeyIsAvailable() && !corridorScene.getItems()[8].getIsTaken()) {
+                    corridorScene.getReactions().setReaction("key");
+                    player.setReactionName("key");
                     return true;
                 }
 
@@ -306,13 +338,20 @@ public class CorridorEventListener implements InputProcessor {
 
         //Exit_menu
         if (exitConfirm.isDraw()) {
-            if (exitConfirm.isDraw() && checkCursorPosition(exitConfirm.getLeftButtonPosition(), exitConfirm.getLeftButtonWidth(), exitConfirm.getLeftButtonHeight())) {
+            if (checkCursorPosition(exitConfirm.getLeftButtonPosition(), exitConfirm.getLeftButtonWidth(), exitConfirm.getLeftButtonHeight())) {
                 exitConfirm.setTouchedLeftButton(true);
                 return true;
             }
-            if (exitConfirm.isDraw() && checkCursorPosition(exitConfirm.getRightButtonPosition(), exitConfirm.getRightButtonWidth(), exitConfirm.getRightButtonHeight())) {
+            if (checkCursorPosition(exitConfirm.getRightButtonPosition(), exitConfirm.getRightButtonWidth(), exitConfirm.getRightButtonHeight())) {
                 exitConfirm.setTouchedRightButton(true);
                 return true;
+            }
+        }
+
+        //Finish_menu
+        if (corridorScene.finishWindow.isDraw()) {
+            if (checkCursorPosition(corridorScene.finishWindow.getOkButtonPosition(), corridorScene.finishWindow.getOkButtonWidth(), corridorScene.finishWindow.getOkButtonHeight())) {
+                corridorScene.finishWindow.setTouchedOkButton(true);
             }
         }
 
@@ -321,7 +360,7 @@ public class CorridorEventListener implements InputProcessor {
             for (InventoryItem invItem : inventory.getInventoryItems()) {
                 if (checkCursorPosition(invItem.getPosition(), inventory.getCellWidth(), inventory.getCellHeight())
                         && corridorScene.getItems()[invItem.getID()].getIsTaken()) {
-                    MyGdxGame.changeCursor("hammer");
+                    MyGdxGame.changeCursor(invItem.getName());
                     MyGdxGame.cursorIsItem = true;
 
                     hud.setTouchedDownBag(false);
@@ -343,18 +382,18 @@ public class CorridorEventListener implements InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         worldCords.set(CorridorScene.getViewport1().unproject(new Vector2(screenX, screenY)));
         if (!dialog.getIsShowDialog() && !maskSelector.isShowMaskSelector() && !diary.isShowDiary() && !player.getWalk() && hud.isTouchedDownBag() && checkCursorPosition(hud.getBagPosition(),
-                hud.getBagWidth(), hud.getBagHeight())) {
+                hud.getBagWidth(), hud.getBagHeight()) && !corridorScene.finishWindow.isDraw()) {
             hud.setTouchedDownBag(false);
             corridorScene.noiseBackground.setIsNoise(!corridorScene.noiseBackground.getIsNoise());
             inventory.setShowInventory(!inventory.isShowInventory());
         }
         if (!dialog.getIsShowDialog() && !maskSelector.isShowMaskSelector() && !inventory.isShowInventory() && hud.isTouchedDownDiary() && !player.getWalk() && checkCursorPosition(hud.getDiaryPosition(),
-                hud.getDiaryWidth(), hud.getDiaryHeight())) {
+                hud.getDiaryWidth(), hud.getDiaryHeight()) && !corridorScene.finishWindow.isDraw()) {
             hud.setTouchedDownDiary(false);
             diary.setShowDiary(!diary.isShowDiary());
         }
         if (!dialog.getIsShowDialog() && !inventory.isShowInventory() && !diary.isShowDiary() && !player.getWalk() && hud.isTouchedDownMask() && checkCursorPosition(hud.getMaskPosition(),
-                hud.getMaskWidth(), hud.getMaskHeight())) {
+                hud.getMaskWidth(), hud.getMaskHeight()) && !corridorScene.finishWindow.isDraw()) {
             hud.setTouchedDownMask(false);
             corridorScene.darkBackground.setIsDark(!corridorScene.darkBackground.getIsDark());
             maskSelector.setShowMaskSelector(!maskSelector.isShowMaskSelector());
@@ -376,26 +415,30 @@ public class CorridorEventListener implements InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+
         worldCords.set(CorridorScene.getViewport1().unproject(new Vector2(screenX, screenY)));
 
         if (maskSelector.isShowMaskSelector())
             checkMaskSelectorMove();
 
+        if (needGlowCheck)
+            setCursorGlow(checkCursorGlow(false));
+
         //hammer
         if (!corridorScene.getItems()[5].getIsTaken() && checkCursorPosition(corridorScene.getItems()[5].getPosition(), corridorScene.getItems()[5].getWidth(),
                 corridorScene.getItems()[5].getHeight())) {
             if (!MyGdxGame.cursorIsItem && !MyGdxGame.curIsChanged && !player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() &&
-                    !hud.isCursorOnSmth() && !dialog.getIsShowDialog()) {
+                    !hud.isCursorOnSmth() && !dialog.getIsShowDialog() && corridorScene.getMeetIsDone() && !corridorScene.finishWindow.isDraw()) {
                 MyGdxGame.changeCursor("hand");
                 return true;
             }
         }
         //flower_with_key
         else if (worldCords.x >= 1985 && worldCords.x <= 2055 && worldCords.y >= 210 && worldCords.y <= 420) {
-            if (!player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() && !hud.isCursorOnSmth() && !dialog.getIsShowDialog()) {
+            if (!player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() && !hud.isCursorOnSmth() && !dialog.getIsShowDialog() && !corridorScene.finishWindow.isDraw()) {
                 if (MyGdxGame.cursorIsItem)
                     setCursorGlow(true);
-                else if (corridorScene.getKeyIsAvailable() && !MyGdxGame.curIsChanged)
+                else if (corridorScene.getKeyIsAvailable() && !MyGdxGame.curIsChanged && !corridorScene.getItems()[8].getIsTaken())
                     MyGdxGame.changeCursor("hand");
                 return true;
             }
@@ -403,7 +446,7 @@ public class CorridorEventListener implements InputProcessor {
         //mask_anger
         else if (!corridorScene.getItems()[3].getIsTaken() && checkCursorPosition(corridorScene.getItems()[3].getPosition(), corridorScene.getItems()[3].getWidth(),
                 corridorScene.getItems()[3].getHeight())) {
-            if (!player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() && !hud.isCursorOnSmth() && !dialog.getIsShowDialog())
+            if (!player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() && !hud.isCursorOnSmth() && !dialog.getIsShowDialog() && !corridorScene.finishWindow.isDraw())
                 if (MyGdxGame.cursorIsItem)
                     setCursorGlow(true);
                 else if (!MyGdxGame.curIsChanged)
@@ -413,7 +456,7 @@ public class CorridorEventListener implements InputProcessor {
         //photo
         else if (checkCursorPosition(corridorScene.getItems()[4].getPosition(), corridorScene.getItems()[4].getWidth(),
                 corridorScene.getItems()[4].getHeight())) {
-            if (!player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() && !hud.isCursorOnSmth() && !dialog.getIsShowDialog())
+            if (!player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() && !hud.isCursorOnSmth() && !dialog.getIsShowDialog() && !corridorScene.finishWindow.isDraw())
                 if (MyGdxGame.cursorIsItem)
                     setCursorGlow(true);
                 else if (!MyGdxGame.curIsChanged && (!corridorScene.getMeetIsDone() || corridorScene.getWindowIsBroken()))
@@ -447,6 +490,10 @@ public class CorridorEventListener implements InputProcessor {
             exitConfirm.setCursorOnRightButton(true);
             return true;
         }
+        if (checkCursorPosition(corridorScene.finishWindow.getOkButtonPosition(), corridorScene.finishWindow.getOkButtonWidth(), corridorScene.finishWindow.getOkButtonHeight())) {
+            corridorScene.finishWindow.setCursorOnOkButton(true);
+            return true;
+        }
 
         //Inventory
         if (inventory.isShowInventory()) {
@@ -470,15 +517,13 @@ public class CorridorEventListener implements InputProcessor {
             dialog.setDialogIndex(-1);
         }
 
-        if (needGlowCheck)
-            setCursorGlow(checkCursorGlow(false));
-
         hud.setCursorOnBag(false);
         hud.setCursorOnDiary(false);
         hud.setCursorOnMask(false);
         hud.setCursorOnPhoto(false);
         exitConfirm.setCursorOnLeftButton(false);
         exitConfirm.setCursorOnRightButton(false);
+        corridorScene.finishWindow.setCursorOnOkButton(false);
         inventory.setCursorOnIcon(false);
         return false;
     }
@@ -542,6 +587,8 @@ public class CorridorEventListener implements InputProcessor {
             if (worldCords.x >= 1040 && worldCords.x <= 1300 && worldCords.y >= 200 && worldCords.y <= 800)
                 return true;
             if (worldCords.x >= 1370 && worldCords.x <= 1620 && worldCords.y >= 200 && worldCords.y <= 800)
+                return true;
+            if (worldCords.x >= 2330 && worldCords.x <= 2991 && worldCords.y >= 153 && worldCords.y <= 854)
                 return true;
 
             return false;

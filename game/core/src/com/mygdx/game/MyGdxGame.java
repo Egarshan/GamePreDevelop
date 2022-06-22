@@ -10,7 +10,7 @@ import com.mygdx.game.Menu.MenuLoader;
 
 public class MyGdxGame extends Game {
 
-	private static Pixmap cursor, cursorHand, cursorHammer, cursorHammerGlow;
+	private static Pixmap cursor, cursorHand, cursorHammer, cursorHammerGlow, cursorKey, cursorKeyGlow;
 	public static int WIDTH, HEIGHT;
 	public static SpriteBatch batch;
 	public static Data data;
@@ -31,8 +31,8 @@ public class MyGdxGame extends Game {
 		curIsChanged = false;
 		cursorIsItem = false;
 
-//		Gdx.graphics.setFullscreenMode(d);
-//		Gdx.graphics.setResizable(false);
+		Gdx.graphics.setFullscreenMode(d);
+		Gdx.graphics.setResizable(false);
 		
 		batch = new SpriteBatch();
 		data = new Data();
@@ -43,6 +43,8 @@ public class MyGdxGame extends Game {
 		cursorHand = new Pixmap(Gdx.files.internal("курсор взятия.png"));
 		cursorHammer = new Pixmap(Gdx.files.internal("Inventory/Молоток_icon.gif"));
 		cursorHammerGlow = new Pixmap(Gdx.files.internal("Inventory/Молоток_icon_glow.gif"));
+		cursorKey = new Pixmap(Gdx.files.internal("Inventory/Ключ_icon.gif"));
+		cursorKeyGlow = new Pixmap(Gdx.files.internal("Inventory/Ключ_icon_glow.gif"));
 
 		Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 1, 1));
 		setScreen(new MenuLoader(this));
@@ -85,6 +87,14 @@ public class MyGdxGame extends Game {
 				case "hammerGlow":
 					Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursorHammerGlow, 64, 64));
 					currentCursor = "hammerGlow";
+					break;
+				case "key":
+					Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursorKey, 64, 64));
+					currentCursor = "key";
+					break;
+				case "keyGlow":
+					Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursorKeyGlow, 64, 64));
+					currentCursor = "keyGlow";
 					break;
 			}
 		}

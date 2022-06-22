@@ -7,6 +7,6 @@ import com.mygdx.game.ResourcesClass;
 public class DoorOpen extends Item {
 
     public DoorOpen() {
-        super(ResourcesClass.getResources().get(4)[0], new Vector2(2400, 130), 600, 600*1.113f, false);
+        super(ResourcesClass.getResources().get(4)[0], new Vector2(2330, 153), 661, 701, false);
     }
 }

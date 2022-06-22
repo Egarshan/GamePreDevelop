@@ -21,7 +21,8 @@ public class CorridorScene implements Screen {
     private Item[] items;
     private Hud hud;
 
-    private ExitConfirm exitConfirm;
+    protected ExitConfirm exitConfirm;
+    protected FinishWindow finishWindow;
 
 //    private Dialogs dialogs;
     private Dialog dialog;
@@ -33,7 +34,7 @@ public class CorridorScene implements Screen {
     private Inventory inventory;
     private MaskSelector maskSelector;
 
-    private boolean keyIsAvailable, windowIsBroken, meetIsDone;
+    private boolean keyIsAvailable, windowIsBroken, meetIsDone, doorIsOpen;
 
     public CorridorScene(MyGdxGame game, CorridorLoader corridorLoader) {
         this.game = game;
@@ -46,7 +47,7 @@ public class CorridorScene implements Screen {
         viewport1 = new ExtendViewport(MyGdxGame.WIDTH, MyGdxGame.HEIGHT, camera);
 
         diary = new Diary(camera);
-        items = new Item[8];
+        items = new Item[9];
         items[5] = new Hammer();
         items[4] = new Photo();
         items[1] = new DoorOpen();
@@ -55,6 +56,7 @@ public class CorridorScene implements Screen {
         items[6] = new Flowers();
         items[3] = new MaskAnger();
         items[7] = new Item(ResourcesClass.getResources().get(4)[8], new Vector2(1850, 530), 303, 260, false);
+        items[8] = new Key();
 
         inventory = new Inventory(camera);
 
@@ -70,6 +72,7 @@ public class CorridorScene implements Screen {
         dialog = new Dialog(camera, player);
 
         exitConfirm = new ExitConfirm(game, camera);
+        finishWindow = new FinishWindow(game, camera);
 
         listener = new CorridorEventListener(game, this, player, diary, hud, exitConfirm, inventory, maskSelector, dialog);
 
@@ -78,6 +81,7 @@ public class CorridorScene implements Screen {
         keyIsAvailable = false;
         windowIsBroken = false;
         meetIsDone = false;
+        doorIsOpen = false;
     }
 
     @Override
@@ -108,6 +112,7 @@ public class CorridorScene implements Screen {
             i.update(delta);
         }
         exitConfirm.update(delta);
+        finishWindow.update(delta);
         if(diary.isShowDiary()) {
             corridorBackground.render(2);
             for(Item i : items) {
@@ -129,6 +134,7 @@ public class CorridorScene implements Screen {
 //            dialogs.render();
             dialog.render();
             exitConfirm.render();
+            finishWindow.render();
         }
         diary.render();
         inventory.render(items);
@@ -218,5 +224,13 @@ public class CorridorScene implements Screen {
 
     public void setMeetIsDone (boolean b) {
         meetIsDone = b;
+    }
+
+    public void setDoorIsOpen(boolean b) {
+        doorIsOpen = b;
+    }
+
+    public boolean getDoorIsOpen() {
+        return doorIsOpen;
     }
 }

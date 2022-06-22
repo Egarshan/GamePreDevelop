@@ -79,7 +79,7 @@ public class CorridorLoader implements Screen {
         manager.load("Inventory/Инвентарь_ячейки.png", Texture.class);
         manager.load("Inventory/Активная ячейка.png", Texture.class);
         manager.load("Inventory/Молоток_icon.gif", Texture.class);
-        manager.load("Inventory/Ключ_icon.png", Texture.class);
+        manager.load("Inventory/Ключ_icon.gif", Texture.class);
 
         manager.load("mask/печаль.png", Texture.class);
         manager.load("mask/гнев.png", Texture.class);
@@ -147,7 +147,7 @@ public class CorridorLoader implements Screen {
 
         inventoryIcons = new TextureRegion[2];
         inventoryIcons[0] = new TextureRegion((Texture)manager.get("Inventory/Молоток_icon.gif"));
-        inventoryIcons[1] = new TextureRegion((Texture)manager.get("Inventory/Ключ_icon.png"));
+        inventoryIcons[1] = new TextureRegion((Texture)manager.get("Inventory/Ключ_icon.gif"));
     }
 
     public void unpackDiaryPast() {

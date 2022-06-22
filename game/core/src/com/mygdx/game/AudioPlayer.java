@@ -14,11 +14,12 @@ public class AudioPlayer {
 
         music[0].setVolume(0.2f);
 
-        sounds = new Sound[4];
+        sounds = new Sound[5];
         sounds[0] = Gdx.audio.newSound(Gdx.files.internal("audio/sounds/walking.mp3"));
         sounds[1] = Gdx.audio.newSound(Gdx.files.internal("audio/sounds/glass_knock.mp3"));
         sounds[2] = Gdx.audio.newSound(Gdx.files.internal("audio/sounds/glass_broke.mp3"));
         sounds[3] = Gdx.audio.newSound(Gdx.files.internal("audio/sounds/take.mp3"));
+        sounds[4] = Gdx.audio.newSound(Gdx.files.internal("audio/sounds/open_door.mp3"));
 
         lamp = new Sound[5];
         lamp[0] = Gdx.audio.newSound(Gdx.files.internal("audio/sounds/lamp/lamp_noise.mp3"));
