@@ -6,6 +6,6 @@ import com.mygdx.game.ResourcesClass;
 
 public class MaskAnger extends Item {
     public MaskAnger() {
-        super(ResourcesClass.getResources().get(4)[5], new Vector2(1900, 307), 62, 62*1.851f, true);
+        super(ResourcesClass.getResources().get(4)[5], new Vector2(1900, 307), 85, 129, true);
     }
 }

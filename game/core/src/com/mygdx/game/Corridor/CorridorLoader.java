@@ -24,7 +24,7 @@ public class CorridorLoader implements Screen {
     private TextureRegion[] items;
     private TextureRegion[] interfaceElements;
 
-    private TextureRegion[] dialogElements;
+    private TextureRegion[] dialogElements, aliceSprites, kostyaSprites;
 
     private TextureRegion[] exitConfirm;
 
@@ -32,7 +32,7 @@ public class CorridorLoader implements Screen {
 
     private TextureRegion[] backgroundAdditional;
 
-    private TextureRegion[] playerMask, maskSelector, maskSelectorButtons, maskSelectorIcons;
+    private TextureRegion[] playerMask, maskSelector, maskSelectorButtons, maskSelectorIcons, emotionsIcons;
 
     public CorridorLoader(MyGdxGame game) {
         this.game = game;
@@ -58,6 +58,9 @@ public class CorridorLoader implements Screen {
         manager.load("девочка бьет молотком.png", Texture.class);
         manager.load("девочка берет предмет.png", Texture.class);
         manager.load("items.png", Texture.class);
+        manager.load("items_mask_anger.png", Texture.class);
+        manager.load("items_door_closed.png", Texture.class);
+        manager.load("items_door_opened.png", Texture.class);
         manager.load("glass_broke.png", Texture.class);
         manager.load("Дневник настоящее.png", Texture.class);
         manager.load("Дневник прошлое.png", Texture.class);
@@ -92,6 +95,23 @@ public class CorridorLoader implements Screen {
         manager.load("mask/selector_icons/селектор_печаль_icon.png", Texture.class);
 
         manager.load("полупрозрачный экран.png", Texture.class);
+
+        manager.load("dialogues/dialog_area.png", Texture.class);
+        manager.load("dialogues/active_phrase.png", Texture.class);
+        manager.load("dialogues/dialog_anger.png", Texture.class);
+        manager.load("dialogues/dialog_sad.png", Texture.class);
+
+
+        manager.load("dialogues/sprites/алиса_sad.png", Texture.class);
+        manager.load("dialogues/sprites/алиса_anger.png", Texture.class);
+
+        manager.load("dialogues/sprites/мал1.png", Texture.class);
+        manager.load("dialogues/sprites/мал2.png", Texture.class);
+        manager.load("dialogues/sprites/мал3.png", Texture.class);
+        manager.load("dialogues/sprites/мал4.png", Texture.class);
+        manager.load("dialogues/sprites/мал5.png", Texture.class);
+        manager.load("dialogues/sprites/мал6.png", Texture.class);
+        manager.load("dialogues/sprites/мал7.png", Texture.class);
     }
 
     private void unpackBackground() {
@@ -309,12 +329,13 @@ public class CorridorLoader implements Screen {
 
     public void unpackItems() {
         items = new TextureRegion[] {
-                new TextureRegion((Texture)manager.get("items.png"), 1, 281, 661, 736), //Дверь открытая
-                new TextureRegion((Texture)manager.get("items.png"), 664, 356, 651, 661), //Дверь закрытая
+                new TextureRegion((Texture)manager.get("items_door_opened.png")), //Дверь открытая
+                new TextureRegion((Texture)manager.get("items_door_closed.png")), //Дверь закрытая
                 new TextureRegion((Texture)manager.get("items.png"), 1317, 617, 400, 400), //Трещина на стенде
                 new TextureRegion((Texture)manager.get("items.png"), 1719, 730, 328, 287), //Цветы
                 new TextureRegion((Texture)manager.get("items.png"), 1, 1, 156, 278), //Мусорка
-                new TextureRegion((Texture)manager.get("items.png"), 1317, 478, 74, 137), //Маска гнева
+//                new TextureRegion((Texture)manager.get("items.png"), 1317, 478, 74, 137), //Маска гнева
+                new TextureRegion((Texture)manager.get("items_mask_anger.png")),
                 new TextureRegion((Texture)manager.get("items.png"), 159, 139, 66, 140), //Молоток
                 new TextureRegion((Texture)manager.get("items.png"), 664, 293, 53, 61), //Фото Кости
                 new TextureRegion((Texture)manager.get("glass_broke.png"))
@@ -338,11 +359,28 @@ public class CorridorLoader implements Screen {
 
     public void unpackDialog() {
         dialogElements = new TextureRegion[] {
-                new TextureRegion((Texture)manager.get("dialogs.png"), 1, 145, 1865, 326), //диалоговое окно
-                new TextureRegion((Texture)manager.get("dialogs.png"), 1, 60, 413, 83), // длинный ответ при наведении
-                new TextureRegion((Texture)manager.get("dialogs.png"), 1, 1, 412, 57), // длинный ответ
-                new TextureRegion((Texture)manager.get("dialogs.png"), 416, 59, 274, 84), // коротокий ответ при наведении
-                new TextureRegion((Texture)manager.get("dialogs.png"), 692, 86, 276, 57) // коротокий ответ
+                new TextureRegion((Texture)manager.get("dialogues/dialog_area.png")),
+                new TextureRegion((Texture)manager.get("dialogues/active_phrase.png"))
+        };
+
+        aliceSprites = new TextureRegion[] {
+                new TextureRegion((Texture)manager.get("dialogues/sprites/алиса_sad.png")),
+                new TextureRegion((Texture)manager.get("dialogues/sprites/алиса_anger.png"))
+        };
+
+        kostyaSprites = new TextureRegion[] {
+                new TextureRegion((Texture)manager.get("dialogues/sprites/мал1.png")),
+                new TextureRegion((Texture)manager.get("dialogues/sprites/мал2.png")),
+                new TextureRegion((Texture)manager.get("dialogues/sprites/мал3.png")),
+                new TextureRegion((Texture)manager.get("dialogues/sprites/мал4.png")),
+                new TextureRegion((Texture)manager.get("dialogues/sprites/мал5.png")),
+                new TextureRegion((Texture)manager.get("dialogues/sprites/мал6.png")),
+                new TextureRegion((Texture)manager.get("dialogues/sprites/мал7.png"))
+        };
+
+        emotionsIcons = new TextureRegion[] {
+                new TextureRegion((Texture)manager.get("dialogues/dialog_sad.png")),
+                new TextureRegion((Texture)manager.get("dialogues/dialog_anger.png"))
         };
     }
 
@@ -394,7 +432,7 @@ public class CorridorLoader implements Screen {
         ResourcesClass.addResources(background, background, girlStand, girlWalk, items, girlHit, girlTakesItem,
                 diary, diaryText0, interfaceElements, dialogElements, diaryText1, diaryText2, diaryText3,
                 diaryText4, diaryText5, diaryText6, exitConfirm, inventory, inventoryIcons, backgroundAdditional, playerMask, maskSelector, maskSelectorButtons,
-                maskSelectorIcons);
+                maskSelectorIcons, aliceSprites, kostyaSprites, emotionsIcons);
     }
 
     @Override

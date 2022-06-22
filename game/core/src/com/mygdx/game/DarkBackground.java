@@ -4,14 +4,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class DarkBackground {
-    private TextureRegion darkBackground;
+    private static TextureRegion darkBackground;
 
-    private Vector2 position;
-    private float width, height;
+    private static Vector2 position;
+    private static float width, height;
 
-    private boolean isDark;
+    private static boolean isDark;
 
-    public DarkBackground() {
+    public  DarkBackground() {
         darkBackground = ResourcesClass.getResources().get(20)[1];
 
         position = new Vector2(0, 0);
@@ -21,22 +21,22 @@ public class DarkBackground {
         isDark = false;
     }
 
-    public void update(float deltaTime) {
+    public static void update(float deltaTime) {
     }
 
-    public void render() {
+    public static void render() {
         if (isDark)
             MyGdxGame.batch.draw(darkBackground, position.x, position.y, width, height);
     }
 
-    public void dispose() {
+    public static void dispose() {
     }
 
-    public boolean getIsDark() {
+    public static boolean getIsDark() {
         return isDark;
     }
 
-    public void setIsDark(boolean b) {
+    public static void setIsDark(boolean b) {
         isDark = b;
     }
 }

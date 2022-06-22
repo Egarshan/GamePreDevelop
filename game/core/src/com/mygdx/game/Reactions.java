@@ -23,7 +23,7 @@ public class Reactions extends Text {
         this.camera = camera;
         draw = false;
         reactions = getReactions();
-        label = new Label("", new Label.LabelStyle(getFont(), Color.WHITE));
+        label = new Label("", new Label.LabelStyle(getMainFont(), Color.WHITE));
         label.setWrap(true);
         label.setAlignment(Align.center);
         labelWidth = Gdx.graphics.getWidth()/1.5f;

@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -9,7 +8,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonValue;
 import com.mygdx.game.Corridor.GameCamera;
 import com.mygdx.game.Corridor.Player;
-public class Dialogs extends Text {
+public class Dialogs_old extends Text {
 
     private static JsonValue dialogs;
 
@@ -30,7 +29,7 @@ public class Dialogs extends Text {
 
     private GameCamera camera;
 
-    public Dialogs(GameCamera camera, Player player) {
+    public Dialogs_old(GameCamera camera, Player player) {
         this.camera = camera;
         draw = false;
 
@@ -51,7 +50,7 @@ public class Dialogs extends Text {
         answer1Position = new Vector2();
         answer2Position = new Vector2();
 
-        textLabel = new Label("", new Label.LabelStyle(getFont(), Color.WHITE));
+        textLabel = new Label("", new Label.LabelStyle(getMainFont(), Color.WHITE));
         textLabel.setWrap(true);
         textLabel.setAlignment(Align.left);
         textLabel.setFontScale(0.5f);

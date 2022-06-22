@@ -10,8 +10,8 @@ import com.badlogic.gdx.utils.JsonValue;
 public class Text {
 
     private static final String FONT_CHARACTERS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;:,{}\"´`'<>";
-    private BitmapFont font;
-    private FreeTypeFontGenerator fontGenerator;
+    private BitmapFont mainFont, dialogFont, characterNameFont;
+    private FreeTypeFontGenerator mainFontGenerator, dialogFontGenerator;
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
     private JsonValue reactions, dialogs;
     private JsonReader jsonReader;
@@ -20,19 +20,35 @@ public class Text {
         jsonReader = new JsonReader();
         reactions = jsonReader.parse(Gdx.files.internal("character_reactions.json")).get("reactions");
 
-        fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("remains.ttf"));
+        mainFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("remains.ttf"));
+        dialogFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("dialogues/dialogues_font.otf"));
+
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.characters = FONT_CHARACTERS;
         parameter.size = Gdx.graphics.getWidth()/20;
         parameter.color.add(Color.BLACK);
 
-        font = fontGenerator.generateFont(parameter);
+        mainFont = mainFontGenerator.generateFont(parameter);
 
-        fontGenerator.dispose();
+        parameter.size = 40;
+        dialogFont = dialogFontGenerator.generateFont(parameter);
+
+        parameter.size = 60;
+        characterNameFont = dialogFontGenerator.generateFont(parameter);
+
+        mainFontGenerator.dispose();
     }
 
-    public BitmapFont getFont() {
-        return font;
+    public BitmapFont getMainFont() {
+        return mainFont;
+    }
+
+    public BitmapFont getDialogFont() {
+        return dialogFont;
+    }
+
+    public BitmapFont getCharacterNameFont() {
+        return characterNameFont;
     }
 
     public JsonValue getReactions() {

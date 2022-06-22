@@ -1,7 +1,5 @@
 package com.mygdx.game.Corridor;
 
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -49,16 +47,16 @@ public class Player {
         hitAnimFrames = new Sprite[37];
         takeAnimFrames = new Sprite[17];
 
-        for(int i = 0; i < stayAnimFrames.length; i++) {
+        for (int i = 0; i < stayAnimFrames.length; i++) {
             stayAnimFrames[i] = new Sprite(ResourcesClass.getResources().get(2)[i]);
         }
-        for(int i = 0; i < walkAnimFrames.length; i++) {
+        for (int i = 0; i < walkAnimFrames.length; i++) {
             walkAnimFrames[i] = new Sprite(ResourcesClass.getResources().get(3)[i]);
         }
-        for(int i = 0; i < hitAnimFrames.length; i++) {
+        for (int i = 0; i < hitAnimFrames.length; i++) {
             hitAnimFrames[i] = new Sprite(ResourcesClass.getResources().get(5)[i]);
         }
-        for(int i = 0; i < takeAnimFrames.length; i++) {
+        for (int i = 0; i < takeAnimFrames.length; i++) {
             takeAnimFrames[i] = new Sprite(ResourcesClass.getResources().get(6)[i]);
         }
 
@@ -86,8 +84,8 @@ public class Player {
         speed0 = new Vector2(0, 0);
         destination = new Vector2();
 
-        width = MyGdxGame.WIDTH/5.5f;
-        height = width*1.364f;
+        width = MyGdxGame.WIDTH / 5.5f;
+        height = width * 1.364f;
 
         delta1 = 0f;
         delta2 = 0f;
@@ -103,7 +101,7 @@ public class Player {
         isTakeAnim = false;
         intersected = false;
 
-        polygon = new Polygon(new float[] {position.x+width/3f, position.y+height/20f, position.x+width/2f, position.y+height/20f, position.x+width/2f, position.y+height/18f, position.x+width/3f, position.y+height/18f});
+        polygon = new Polygon(new float[]{position.x + width / 3f, position.y + height / 20f, position.x + width / 2f, position.y + height / 20f, position.x + width / 2f, position.y + height / 18f, position.x + width / 3f, position.y + height / 18f});
 
         reactionName = "";
 
@@ -113,29 +111,30 @@ public class Player {
         maskTextures[0] = ResourcesClass.getResources().get(21)[0];
         maskTextures[1] = ResourcesClass.getResources().get(21)[1];
 
-        for (TextureRegion mask: maskTextures)
-            mask.flip(true,false);
+        for (TextureRegion mask : maskTextures)
+            mask.flip(true, false);
 
         walkingSound = false;
         actionSound = false;
     }
 
     public void update(float deltaTime) {
-        polygon.setVertices(new float[] {position.x+width/2.3f, position.y+height/50f, position.x+width/1.6f, position.y+height/50f, position.x+width/1.6f, position.y+height/30f, position.x+width/2.3f, position.y+height/30f});
-        if((Intersector.overlapConvexPolygons(polygon, bin.getPolygon()) || Intersector.overlapConvexPolygons(polygon, bin.getPolygon2()) || Intersector.overlapConvexPolygons(polygon, flowers.getPolygon1()) || Intersector.overlapConvexPolygons(polygon, flowers.getPolygon2()))) {
-            speed0.set(0, 0);
-            walk = false;
-            stand = true;
-            intersected = true;
-            delta1 = 0;
-        } else {
-            speed0.set(speed);
-        }
+        polygon.setVertices(new float[]{position.x + width / 2.3f, position.y + height / 50f, position.x + width / 1.6f, position.y + height / 50f, position.x + width / 1.6f, position.y + height / 30f, position.x + width / 2.3f, position.y + height / 30f});
+//        if ((Intersector.overlapConvexPolygons(polygon, bin.getPolygon()) || Intersector.overlapConvexPolygons(polygon, bin.getPolygon2()) || Intersector.overlapConvexPolygons(polygon, flowers.getPolygon1()) || Intersector.overlapConvexPolygons(polygon, flowers.getPolygon2()))) {
+//            speed0.set(0, 0);
+//            walk = false;
+//            stand = true;
+//            intersected = true;
+//            delta1 = 0;
+//        } else {
+//            speed0.set(speed);
+//        }
+        speed0.set(speed);
 
-        width = MyGdxGame.WIDTH/5.5f-position.y/2.5f;
-        height = width*1.364f;
+        width = MyGdxGame.WIDTH / 5.5f - position.y / 2.5f;
+        height = width * 1.364f;
 
-        if(stand) {
+        if (stand) {
             if (walkingSound) {
                 AudioPlayer.getSounds()[0].stop();
                 walkingSound = false;
@@ -145,23 +144,23 @@ public class Player {
             stopTimer();
         }
 
-        if(!isStandAnim) {
+        if (!isStandAnim) {
             delta1 = 0;
         } else {
             delta1 += deltaTime;
         }
         delta2 += deltaTime;
-        if(!isHitAnim) {
+        if (!isHitAnim) {
             delta3 = 0;
         } else {
             delta3 += deltaTime;
         }
-        if(!isTakeAnim) {
+        if (!isTakeAnim) {
             delta4 = 0;
         } else {
             delta4 += deltaTime;
         }
-        if(changeDirection) {
+        if (changeDirection) {
             for (Sprite stayAnimFrame : stayAnimFrames) {
                 stayAnimFrame.flip(true, false);
             }
@@ -185,28 +184,28 @@ public class Player {
             changeDirection = false;
             intersected = false;
         }
-        if(walk) {
-            if(position.y <= 0) {
+        if (walk) {
+            if (position.y <= 0) {
                 position.y = 0;
             }
-            if(position.y > 200) {
+            if (position.y > 200) {
                 position.y = 200;
             }
-            if(position.x+(width/2f) < 10) {
-                position.x = 210-width/2f;
+            if (position.x + (width / 2f) < 10) {
+                position.x = 210 - width / 2f;
             }
 
-            if(position.x+(width/2f)-destination.x <= 0) {
-                if(speed.x > 0) {
-                    if(speed0.x == 0) {
-                        position.add(speed0.x*deltaTime, speed0.y*deltaTime);
+            if (position.x + (width / 2f) - destination.x <= 0) {
+                if (speed.x > 0) {
+                    if (speed0.x == 0) {
+                        position.add(speed0.x * deltaTime, speed0.y * deltaTime);
                     } else {
-                        position.add(speed.x*deltaTime, speed.y*deltaTime);
+                        position.add(speed.x * deltaTime, speed.y * deltaTime);
                     }
                 } else {
-                    if(!reactions.isReactionEmpty()) {
+                    if (!reactions.isReactionEmpty()) {
                         reactions.setDraw(true);
-                        if(Objects.equals(reactionName, "hammer") && !actionSound) {
+                        if (Objects.equals(reactionName, "hammer") && !actionSound) {
                             isTakeAnim = true;
                             walk = false;
                             reactionName = "";
@@ -215,39 +214,44 @@ public class Player {
 
                             AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
                             actionSound = true;
-                        }
-                        else if(Objects.equals(reactionName, "mask") && !actionSound) {
+                        } else if (Objects.equals(reactionName, "mask") && !actionSound) {
                             isTakeAnim = true;
                             walk = false;
                             reactionName = "";
-                            corridorScene.getItems()[6].setVisible(false);
-                            corridorScene.getItems()[6].setIsTaken(true);
+                            corridorScene.getItems()[3].setVisible(false);
+                            corridorScene.getItems()[3].setIsTaken(true);
                             mask.takeMask("anger");
                             corridorScene.getHud().setIsShowMask(true);
 
                             AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
                             actionSound = true;
-                        }
-                        else if(Objects.equals(reactionName, "honor_board") && !actionSound) {
+                        } else if (Objects.equals(reactionName, "honor_board") && !actionSound) {
                             AudioPlayer.getSounds()[1].play(SOUND_VOLUME);
                             actionSound = true;
-                        }
-                        else if(Objects.equals(reactionName, "hammer_honor_board") && !actionSound) {
+                        } else if (Objects.equals(reactionName, "hammer_honor_board") && !actionSound) {
                             walk = false;
                             isHitAnim = true;
                             AudioPlayer.getSounds()[2].play(SOUND_VOLUME);
                             corridorScene.getItems()[7].setVisible(true);
                             actionSound = true;
-                        }
-                        else if(Objects.equals(reactionName, "photo") && !actionSound) {
-                            corridorScene.getItems()[4].setVisible(false);
-                            corridorScene.getHud().setIsShowPhoto(true);
+                        } else if (Objects.equals(reactionName, "photo") && !actionSound) {
+                            if (!corridorScene.getMeetIsDone()) {
+                                corridorScene.setMeetIsDone(true);
 
-                            AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                                AudioPlayer.getSounds()[1].play(SOUND_VOLUME);
+                                corridorScene.getDialog().nextDialog("dialog_1");
+                                DarkBackground.setIsDark(true);
+                            } else {
+                                corridorScene.getItems()[4].setVisible(false);
+                                corridorScene.getItems()[4].setIsTaken(true);
+                                corridorScene.getHud().setIsShowPhoto(true);
+
+                                AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                            }
                             actionSound = true;
                         }
                     }
-                    if(!isTakeAnim && !isHitAnim) {
+                    if (!isTakeAnim && !isHitAnim) {
                         walk = false;
                         stand = true;
                     }
@@ -255,17 +259,17 @@ public class Player {
                 }
             }
 
-            if(position.x+(width/2f)-destination.x >= 0) {
-                if(speed.x < 0) {
-                    if(speed0.x == 0) {
-                        position.add(speed0.x*deltaTime, speed0.y*deltaTime);
+            if (position.x + (width / 2f) - destination.x >= 0) {
+                if (speed.x < 0) {
+                    if (speed0.x == 0) {
+                        position.add(speed0.x * deltaTime, speed0.y * deltaTime);
                     } else {
-                        position.add(speed.x*deltaTime, speed.y*deltaTime);
+                        position.add(speed.x * deltaTime, speed.y * deltaTime);
                     }
                 } else {
-                    if(!reactions.isReactionEmpty()) {
+                    if (!reactions.isReactionEmpty()) {
                         reactions.setDraw(true);
-                        if(Objects.equals(reactionName, "hammer") && !actionSound) {
+                        if (Objects.equals(reactionName, "hammer") && !actionSound) {
                             isTakeAnim = true;
                             walk = false;
                             reactionName = "";
@@ -274,39 +278,44 @@ public class Player {
 
                             AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
                             actionSound = true;
-                        }
-                        else if(Objects.equals(reactionName, "mask") && !actionSound) {
+                        } else if (Objects.equals(reactionName, "mask") && !actionSound) {
                             isTakeAnim = true;
                             walk = false;
                             reactionName = "";
-                            corridorScene.getItems()[6].setVisible(false);
-                            corridorScene.getItems()[6].setIsTaken(true);
+                            corridorScene.getItems()[3].setVisible(false);
+                            corridorScene.getItems()[3].setIsTaken(true);
                             mask.takeMask("anger");
                             corridorScene.getHud().setIsShowMask(true);
 
                             AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
                             actionSound = true;
-                        }
-                        else if(Objects.equals(reactionName, "honor_board") && !actionSound) {
+                        } else if (Objects.equals(reactionName, "honor_board") && !actionSound) {
                             AudioPlayer.getSounds()[1].play(SOUND_VOLUME);
                             actionSound = true;
-                        }
-                        else  if(Objects.equals(reactionName, "hammer_honor_board") && !actionSound) {
+                        } else if (Objects.equals(reactionName, "hammer_honor_board") && !actionSound) {
                             walk = false;
                             isHitAnim = true;
                             AudioPlayer.getSounds()[2].play(SOUND_VOLUME);
                             corridorScene.getItems()[7].setVisible(true);
                             actionSound = true;
-                        }
-                        else if(Objects.equals(reactionName, "photo") && !actionSound) {
-                            corridorScene.getItems()[4].setVisible(false);
-                            corridorScene.getHud().setIsShowPhoto(true);
+                        } else if (Objects.equals(reactionName, "photo") && !actionSound) {
+                            if (!corridorScene.getMeetIsDone()) {
+                                corridorScene.setMeetIsDone(true);
 
-                            AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                                AudioPlayer.getSounds()[1].play(SOUND_VOLUME);
+                                corridorScene.getDialog().nextDialog("dialog_1");
+                                DarkBackground.setIsDark(true);
+                            } else {
+                                corridorScene.getItems()[4].setVisible(false);
+                                corridorScene.getItems()[4].setIsTaken(true);
+                                corridorScene.getHud().setIsShowPhoto(true);
+
+                                AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                            }
                             actionSound = true;
                         }
                     }
-                    if(!isTakeAnim && !isHitAnim) {
+                    if (!isTakeAnim && !isHitAnim) {
                         walk = false;
                         stand = true;
                     }
@@ -318,10 +327,10 @@ public class Player {
                 walkingSound = true;
             }
         } else {
-            if(intersected) {
-                if(!reactions.isReactionEmpty()) {
+            if (intersected) {
+                if (!reactions.isReactionEmpty()) {
                     reactions.setDraw(true);
-                    if(Objects.equals(reactionName, "hammer") && !actionSound) {
+                    if (Objects.equals(reactionName, "hammer") && !actionSound) {
                         isTakeAnim = true;
                         walk = false;
                         reactionName = "";
@@ -330,39 +339,44 @@ public class Player {
 
                         AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
                         actionSound = true;
-                    }
-                    else if(Objects.equals(reactionName, "mask") && !actionSound) {
+                    } else if (Objects.equals(reactionName, "mask") && !actionSound) {
                         isTakeAnim = true;
                         walk = false;
                         reactionName = "";
-                        corridorScene.getItems()[6].setVisible(false);
-                        corridorScene.getItems()[6].setIsTaken(true);
+                        corridorScene.getItems()[3].setVisible(false);
+                        corridorScene.getItems()[3].setIsTaken(true);
                         mask.takeMask("anger");
                         corridorScene.getHud().setIsShowMask(true);
 
                         AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
                         actionSound = true;
-                    }
-                    else if(Objects.equals(reactionName, "honor_board") && !actionSound) {
+                    } else if (Objects.equals(reactionName, "honor_board") && !actionSound) {
                         AudioPlayer.getSounds()[1].play(SOUND_VOLUME);
                         actionSound = true;
-                    }
-                    else  if(Objects.equals(reactionName, "hammer_honor_board") && !actionSound) {
+                    } else if (Objects.equals(reactionName, "hammer_honor_board") && !actionSound) {
                         walk = false;
                         isHitAnim = true;
                         AudioPlayer.getSounds()[2].play(SOUND_VOLUME);
                         corridorScene.getItems()[7].setVisible(true);
                         actionSound = true;
-                    }
-                    else if(Objects.equals(reactionName, "photo") && !actionSound) {
-                        corridorScene.getItems()[4].setVisible(false);
-                        corridorScene.getHud().setIsShowPhoto(true);
+                    } else if (Objects.equals(reactionName, "photo") && !actionSound) {
+                        if (!corridorScene.getMeetIsDone()) {
+                            corridorScene.setMeetIsDone(true);
 
-                        AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                            AudioPlayer.getSounds()[1].play(SOUND_VOLUME);
+                            corridorScene.getDialog().nextDialog("dialog_1");
+                            DarkBackground.setIsDark(true);
+                        } else {
+                            corridorScene.getItems()[4].setVisible(false);
+                            corridorScene.getItems()[4].setIsTaken(true);
+                            corridorScene.getHud().setIsShowPhoto(true);
+
+                            AudioPlayer.getSounds()[3].play(SOUND_VOLUME);
+                        }
                         actionSound = true;
                     }
                 }
-                if(!isTakeAnim && !isHitAnim) {
+                if (!isTakeAnim && !isHitAnim) {
                     walk = false;
                     stand = true;
                 }
@@ -370,11 +384,11 @@ public class Player {
         }
 
         position.set(CorridorScene.getViewport1().project(position));
-        if(position.x+width/2f >= MyGdxGame.WIDTH/2f && walk && !camera.isCameraOnRight()) {
+        if (position.x + width / 2f >= MyGdxGame.WIDTH / 2f && walk && !camera.isCameraOnRight()) {
             camera.setMoveRight(true);
             camera.setMoveLeft(false);
         } else {
-            if(position.x+width/2f < MyGdxGame.WIDTH/2f && walk && !camera.isCameraOnLeft()) {
+            if (position.x + width / 2f < MyGdxGame.WIDTH / 2f && walk && !camera.isCameraOnLeft()) {
                 camera.setMoveLeft(true);
                 camera.setMoveRight(false);
             } else {
@@ -385,46 +399,46 @@ public class Player {
 
         position.set(CorridorScene.getViewport1().unproject(position));
 
-        position.y = MyGdxGame.HEIGHT-position.y;
+        position.y = MyGdxGame.HEIGHT - position.y;
         width0 = width;
-        width = MyGdxGame.WIDTH/5.5f-position.y/2.5f;
-        position.x += (width0-width)/2f;
+        width = MyGdxGame.WIDTH / 5.5f - position.y / 2.5f;
+        position.x += (width0 - width) / 2f;
 
-        if(!camera.isCameraOnLeft() || !camera.isCameraOnRight()) {
-            camera.setCameraPosition(position.x+width/2f);
+        if (!camera.isCameraOnLeft() || !camera.isCameraOnRight()) {
+            camera.setCameraPosition(position.x + width / 2f);
         }
     }
 
     public void render() {
-        if(isStandAnim && stand && !isHitAnim && !walk) {
+        if (isStandAnim && stand && !isHitAnim && !walk) {
             currentFrame = stayAnim.getKeyFrame(delta1, false);
-            if(stayAnim.isAnimationFinished(delta1)) {
+            if (stayAnim.isAnimationFinished(delta1)) {
                 delta1 = 0;
                 isStandAnim = false;
             }
         }
-        if(walk && !stand && !isHitAnim) {
+        if (walk && !stand && !isHitAnim) {
             currentFrame = walkAnim.getKeyFrame(delta2, true);
         }
-        if(isHitAnim && !stand && !walk && !isTakeAnim) {
+        if (isHitAnim && !stand && !walk && !isTakeAnim) {
             currentFrame = hitAnim.getKeyFrame(delta3, false);
-            if(hitAnim.isAnimationFinished(delta3)) {
+            if (hitAnim.isAnimationFinished(delta3)) {
                 delta3 = 0f;
                 isHitAnim = false;
                 stand = true;
                 walk = false;
             }
         }
-        if(isTakeAnim && !stand && !walk && !isHitAnim) {
+        if (isTakeAnim && !stand && !walk && !isHitAnim) {
             currentFrame = takeAnim.getKeyFrame(delta4, false);
-            if(takeAnim.isAnimationFinished(delta4)) {
+            if (takeAnim.isAnimationFinished(delta4)) {
                 delta4 = 0f;
                 isTakeAnim = false;
                 stand = true;
                 walk = false;
             }
         }
-        if(!isStandAnim && stand && !walk && !isHitAnim) {
+        if (!isStandAnim && stand && !walk && !isHitAnim) {
             currentFrame = stayAnim.getKeyFrames()[0];
         }
         MyGdxGame.batch.draw(currentFrame, position.x, position.y, width, height);
@@ -433,11 +447,11 @@ public class Player {
     }
 
     public void dispose() {
-       Data.savePlayerPosition(position.x, position.y);
+        Data.savePlayerPosition(position.x, position.y);
     }
 
     private void startTimer() {
-        if(standTimer.isEmpty()) {
+        if (standTimer.isEmpty()) {
             standTimer.scheduleTask(new Timer.Task() {
                 @Override
                 public void run() {
@@ -448,7 +462,7 @@ public class Player {
     }
 
     private void stopTimer() {
-        if(!standTimer.isEmpty()) {
+        if (!standTimer.isEmpty()) {
             standTimer.clear();
         }
     }
@@ -495,23 +509,23 @@ public class Player {
         actionSound = false;
         reactionName = "";
         destination.set(x, y);
-        if(position.x+(width/2f) < x) {
-            speed.x = (float)(250*Math.abs(position.x+(width/2f)-destination.x)/Math.sqrt(Math.pow((position.x+(width/2f)-destination.x), 2)+Math.pow((position.y-destination.y), 2)));
-            if(!right) {
+        if (position.x + (width / 2f) < x) {
+            speed.x = (float) (250 * Math.abs(position.x + (width / 2f) - destination.x) / Math.sqrt(Math.pow((position.x + (width / 2f) - destination.x), 2) + Math.pow((position.y - destination.y), 2)));
+            if (!right) {
                 setChangeDirection();
                 right = true;
             }
         } else {
-            speed.x = (float)(-250*Math.abs(position.x+(width/2f)-destination.x)/Math.sqrt(Math.pow((position.x+(width/2f)-destination.x), 2)+Math.pow((position.y-destination.y), 2)));
-            if(right) {
+            speed.x = (float) (-250 * Math.abs(position.x + (width / 2f) - destination.x) / Math.sqrt(Math.pow((position.x + (width / 2f) - destination.x), 2) + Math.pow((position.y - destination.y), 2)));
+            if (right) {
                 setChangeDirection();
                 right = false;
             }
         }
-        if(position.y < y) {
-            speed.y = Math.abs(speed.x) * Math.abs(position.y-destination.y) / Math.abs(position.x+(width/2f)-destination.x);
+        if (position.y < y) {
+            speed.y = Math.abs(speed.x) * Math.abs(position.y - destination.y) / Math.abs(position.x + (width / 2f) - destination.x);
         } else {
-            speed.y = -Math.abs(speed.x) * Math.abs(position.y-destination.y) / Math.abs(position.x+(width/2f)-destination.x);
+            speed.y = -Math.abs(speed.x) * Math.abs(position.y - destination.y) / Math.abs(position.x + (width / 2f) - destination.x);
         }
     }
 
@@ -540,7 +554,7 @@ public class Player {
     }
 
     private TextureRegion getCurrentMaskTexture() {
-        switch (mask.getCurrentMask()){
+        switch (mask.getCurrentMask()) {
             case "sad":
                 return maskTextures[0];
             case "anger":

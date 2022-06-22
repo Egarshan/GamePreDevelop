@@ -11,14 +11,14 @@ public class MenuHud {
 
     private TextureRegion titleTexture, buttonPressedTexture, buttonTexture;
     private Vector2 titlePosition;
-    private Vector2 loadButtonPosition, newGameButtonPosition, galleryButtonPosition, optionsButtonPosition, exitButtonPosition;
+    private Vector2 loadButtonPosition, newGameButtonPosition, galleryButtonPosition, /*optionsButtonPosition,*/ exitButtonPosition;
     private float titleWidth, titleHeight;
     private float buttonPressedWidth, buttonPressedHeight;
     private float buttonWidth, buttonHeight;
-    private boolean loadButtonActive, newGameButtonActive, galleryButtonActive, optionsButtonActive, exitButtonActive;
+    private boolean loadButtonActive, newGameButtonActive, galleryButtonActive, /*optionsButtonActive,*/ exitButtonActive;
     private boolean touchedDownLoadButton, touchedDownNewGameButton, touchedDownGalleryButton, touchedDownOptionsButton, touchedDownExitButton;
-    private Label loadLabel, newGameLabel, galleryLabel, optionsLabel, exitLabel;
-    private float loadLabelScale, newGameLabelScale, galleryLabelScale, optionsLabelScale, exitLabelScale;
+    private Label loadLabel, newGameLabel, galleryLabel, /*optionsLabel,*/ exitLabel;
+    private float loadLabelScale, newGameLabelScale, galleryLabelScale, /*optionsLabelScale,*/ exitLabelScale;
     private MenuFont menuFont;
 
     public MenuHud(MenuFont menuFont) {
@@ -38,13 +38,14 @@ public class MenuHud {
         loadButtonPosition = new Vector2(titlePosition.x+titleWidth/2.14f, titlePosition.y-1.8f*titleHeight);
         newGameButtonPosition = new Vector2(loadButtonPosition.x, loadButtonPosition.y-1.5f*buttonHeight);
         galleryButtonPosition = new Vector2(newGameButtonPosition.x, newGameButtonPosition.y-1.5f*buttonHeight);
-        optionsButtonPosition = new Vector2(galleryButtonPosition.x, galleryButtonPosition.y-1.5f*buttonHeight);
-        exitButtonPosition = new Vector2(optionsButtonPosition.x, optionsButtonPosition.y-1.5f*buttonHeight);
+//        optionsButtonPosition = new Vector2(galleryButtonPosition.x, galleryButtonPosition.y-1.5f*buttonHeight);
+//        exitButtonPosition = new Vector2(optionsButtonPosition.x, optionsButtonPosition.y-1.5f*buttonHeight);
+        exitButtonPosition = new Vector2(galleryButtonPosition.x, galleryButtonPosition.y-1.5f*buttonHeight);
 
         loadButtonActive = false;
         newGameButtonActive = false;
         galleryButtonActive = false;
-        optionsButtonActive = false;
+//        optionsButtonActive = false;
         exitButtonActive = false;
 
         touchedDownLoadButton = false;
@@ -56,7 +57,7 @@ public class MenuHud {
         loadLabelScale = 0.5f;
         newGameLabelScale = 0.5f;
         galleryLabelScale = 0.5f;
-        optionsLabelScale = 0.5f;
+//        optionsLabelScale = 0.5f;
         exitLabelScale = 0.5f;
 
         loadLabel = new Label("Загрузить", new Label.LabelStyle(menuFont.getFont(), Color.WHITE));
@@ -71,9 +72,9 @@ public class MenuHud {
         galleryLabel.setBounds(galleryButtonPosition.x+buttonWidth/9f, galleryButtonPosition.y+buttonHeight/2f, 0, 0);
         galleryLabel.setFontScale(0.5f);
 
-        optionsLabel = new Label("Настройки", new Label.LabelStyle(menuFont.getFont(), Color.WHITE));
-        optionsLabel.setBounds(optionsButtonPosition.x+buttonWidth/9f, optionsButtonPosition.y+buttonHeight/2f, 0, 0);
-        optionsLabel.setFontScale(0.5f);
+//        optionsLabel = new Label("Настройки", new Label.LabelStyle(menuFont.getFont(), Color.WHITE));
+//        optionsLabel.setBounds(optionsButtonPosition.x+buttonWidth/9f, optionsButtonPosition.y+buttonHeight/2f, 0, 0);
+//        optionsLabel.setFontScale(0.5f);
 
         exitLabel = new Label("Выход", new Label.LabelStyle(menuFont.getFont(), Color.WHITE));
         exitLabel.setBounds(exitButtonPosition.x+buttonWidth/9f, exitButtonPosition.y+buttonHeight/2f, 0, 0);
@@ -84,7 +85,7 @@ public class MenuHud {
         loadLabel.setFontScale(loadLabelScale);
         newGameLabel.setFontScale(newGameLabelScale);
         galleryLabel.setFontScale(galleryLabelScale);
-        optionsLabel.setFontScale(optionsLabelScale);
+//        optionsLabel.setFontScale(optionsLabelScale);
         exitLabel.setFontScale(exitLabelScale);
 
         if(isLoadButtonActive()) {
@@ -102,11 +103,11 @@ public class MenuHud {
         } else {
             galleryLabel.setBounds(galleryButtonPosition.x+buttonWidth/9f, galleryButtonPosition.y+buttonHeight/1.8f, 0, 0);
         }
-        if(isOptionsButtonActive()) {
-            optionsLabel.setBounds(optionsButtonPosition.x-(buttonPressedWidth-buttonWidth)+buttonPressedWidth/9f, optionsButtonPosition.y-(buttonPressedHeight-buttonHeight)/2f+buttonPressedHeight/1.8f, 0, 0);
-        } else {
-            optionsLabel.setBounds(optionsButtonPosition.x+buttonWidth/9f, optionsButtonPosition.y+buttonHeight/1.8f, 0, 0);
-        }
+//        if(isOptionsButtonActive()) {
+//            optionsLabel.setBounds(optionsButtonPosition.x-(buttonPressedWidth-buttonWidth)+buttonPressedWidth/9f, optionsButtonPosition.y-(buttonPressedHeight-buttonHeight)/2f+buttonPressedHeight/1.8f, 0, 0);
+//        } else {
+//            optionsLabel.setBounds(optionsButtonPosition.x+buttonWidth/9f, optionsButtonPosition.y+buttonHeight/1.8f, 0, 0);
+//        }
         if(isExitButtonActive()) {
             exitLabel.setBounds(exitButtonPosition.x-(buttonPressedWidth-buttonWidth)+buttonPressedWidth/9f, exitButtonPosition.y-(buttonPressedHeight-buttonHeight)/2f+buttonPressedHeight/1.8f, 0, 0);
         } else {
@@ -131,11 +132,11 @@ public class MenuHud {
         } else {
             MyGdxGame.batch.draw(buttonTexture, galleryButtonPosition.x, galleryButtonPosition.y, buttonWidth, buttonHeight);
         }
-        if(isOptionsButtonActive()) {
-            MyGdxGame.batch.draw(buttonPressedTexture, optionsButtonPosition.x-(buttonPressedWidth-buttonWidth), optionsButtonPosition.y-(buttonPressedHeight-buttonHeight)/2f, buttonPressedWidth, buttonPressedHeight);
-        } else {
-            MyGdxGame.batch.draw(buttonTexture, optionsButtonPosition.x, optionsButtonPosition.y, buttonWidth, buttonHeight);
-        }
+//        if(isOptionsButtonActive()) {
+//            MyGdxGame.batch.draw(buttonPressedTexture, optionsButtonPosition.x-(buttonPressedWidth-buttonWidth), optionsButtonPosition.y-(buttonPressedHeight-buttonHeight)/2f, buttonPressedWidth, buttonPressedHeight);
+//        } else {
+//            MyGdxGame.batch.draw(buttonTexture, optionsButtonPosition.x, optionsButtonPosition.y, buttonWidth, buttonHeight);
+//        }
         if(isExitButtonActive()) {
             MyGdxGame.batch.draw(buttonPressedTexture, exitButtonPosition.x-(buttonPressedWidth-buttonWidth), exitButtonPosition.y-(buttonPressedHeight-buttonHeight)/2f, buttonPressedWidth, buttonPressedHeight);
         } else {
@@ -144,7 +145,7 @@ public class MenuHud {
         loadLabel.draw(MyGdxGame.batch, 1);
         newGameLabel.draw(MyGdxGame.batch, 1);
         galleryLabel.draw(MyGdxGame.batch, 1);
-        optionsLabel.draw(MyGdxGame.batch, 1);
+//        optionsLabel.draw(MyGdxGame.batch, 1);
         exitLabel.draw(MyGdxGame.batch, 1);
     }
 
@@ -164,9 +165,9 @@ public class MenuHud {
         return galleryButtonActive;
     }
 
-    public boolean isOptionsButtonActive() {
-        return optionsButtonActive;
-    }
+//    public boolean isOptionsButtonActive() {
+//        return optionsButtonActive;
+//    }
 
     public boolean isExitButtonActive() {
         return exitButtonActive;
@@ -184,9 +185,9 @@ public class MenuHud {
         this.galleryButtonActive = galleryButtonActive;
     }
 
-    public void setOptionsButtonActive(boolean optionsButtonActive) {
-        this.optionsButtonActive = optionsButtonActive;
-    }
+//    public void setOptionsButtonActive(boolean optionsButtonActive) {
+//        this.optionsButtonActive = optionsButtonActive;
+//    }
 
     public void setExitButtonActive(boolean exitButtonActive) {
         this.exitButtonActive = exitButtonActive;
@@ -204,9 +205,9 @@ public class MenuHud {
         return galleryButtonPosition;
     }
 
-    public Vector2 getOptionsButtonPosition() {
-        return optionsButtonPosition;
-    }
+//    public Vector2 getOptionsButtonPosition() {
+//        return optionsButtonPosition;
+//    }
 
     public Vector2 getExitButtonPosition() {
         return exitButtonPosition;
@@ -232,9 +233,9 @@ public class MenuHud {
         this.galleryLabelScale = galleryLabelScale;
     }
 
-    public void setOptionsLabelScale(float optionsLabelScale) {
-        this.optionsLabelScale = optionsLabelScale;
-    }
+//    public void setOptionsLabelScale(float optionsLabelScale) {
+//        this.optionsLabelScale = optionsLabelScale;
+//    }
 
     public void setExitLabelScale(float exitLabelScale) {
         this.exitLabelScale = exitLabelScale;

@@ -48,11 +48,11 @@ public class MenuEventListener implements InputProcessor {
             menuHud.setTouchedDownGalleryButton(true);
             return true;
         }
-        if(screenX >= menuHud.getOptionsButtonPosition().x && screenX <= menuHud.getOptionsButtonPosition().x+menuHud.getButtonWidth() &&
-                screenY >= menuHud.getOptionsButtonPosition().y && screenY <= menuHud.getOptionsButtonPosition().y+menuHud.getButtonHeight()) {
-            menuHud.setTouchedDownOptionsButton(true);
-            return true;
-        }
+//        if(screenX >= menuHud.getOptionsButtonPosition().x && screenX <= menuHud.getOptionsButtonPosition().x+menuHud.getButtonWidth() &&
+//                screenY >= menuHud.getOptionsButtonPosition().y && screenY <= menuHud.getOptionsButtonPosition().y+menuHud.getButtonHeight()) {
+//            menuHud.setTouchedDownOptionsButton(true);
+//            return true;
+//        }
         if(screenX >= menuHud.getExitButtonPosition().x && screenX <= menuHud.getExitButtonPosition().x+menuHud.getButtonWidth() &&
                 screenY >= menuHud.getExitButtonPosition().y && screenY <= menuHud.getExitButtonPosition().y+menuHud.getButtonHeight()) {
             menuHud.setTouchedDownExitButton(true);
@@ -83,11 +83,11 @@ public class MenuEventListener implements InputProcessor {
             menuHud.setTouchedDownGalleryButton(false);
             return true;
         }
-        if(screenX >= menuHud.getOptionsButtonPosition().x && screenX <= menuHud.getOptionsButtonPosition().x+menuHud.getButtonWidth() &&
-                screenY >= menuHud.getOptionsButtonPosition().y && screenY <= menuHud.getOptionsButtonPosition().y+menuHud.getButtonHeight() && menuHud.isTouchedDownOptionsButton()) {
-            menuHud.setTouchedDownOptionsButton(false);
-            return true;
-        }
+//        if(screenX >= menuHud.getOptionsButtonPosition().x && screenX <= menuHud.getOptionsButtonPosition().x+menuHud.getButtonWidth() &&
+//                screenY >= menuHud.getOptionsButtonPosition().y && screenY <= menuHud.getOptionsButtonPosition().y+menuHud.getButtonHeight() && menuHud.isTouchedDownOptionsButton()) {
+//            menuHud.setTouchedDownOptionsButton(false);
+//            return true;
+//        }
         if(screenX >= menuHud.getExitButtonPosition().x && screenX <= menuHud.getExitButtonPosition().x+menuHud.getButtonWidth() &&
                 screenY >= menuHud.getExitButtonPosition().y && screenY <= menuHud.getExitButtonPosition().y+menuHud.getButtonHeight() && menuHud.isTouchedDownExitButton()) {
             menuHud.setTouchedDownExitButton(false);
@@ -129,12 +129,12 @@ public class MenuEventListener implements InputProcessor {
             menuHud.setGalleryLabelScale(0.6f);
             return true;
         }
-        if(screenX >= menuHud.getOptionsButtonPosition().x && screenX <= menuHud.getOptionsButtonPosition().x+menuHud.getButtonWidth() &&
-                screenY >= menuHud.getOptionsButtonPosition().y && screenY <= menuHud.getOptionsButtonPosition().y+menuHud.getButtonHeight()) {
-            menuHud.setOptionsButtonActive(true);
-            menuHud.setOptionsLabelScale(0.6f);
-            return true;
-        }
+//        if(screenX >= menuHud.getOptionsButtonPosition().x && screenX <= menuHud.getOptionsButtonPosition().x+menuHud.getButtonWidth() &&
+//                screenY >= menuHud.getOptionsButtonPosition().y && screenY <= menuHud.getOptionsButtonPosition().y+menuHud.getButtonHeight()) {
+//            menuHud.setOptionsButtonActive(true);
+//            menuHud.setOptionsLabelScale(0.6f);
+//            return true;
+//        }
         if(screenX >= menuHud.getExitButtonPosition().x && screenX <= menuHud.getExitButtonPosition().x+menuHud.getButtonWidth() &&
                 screenY >= menuHud.getExitButtonPosition().y && screenY <= menuHud.getExitButtonPosition().y+menuHud.getButtonHeight()) {
             menuHud.setExitButtonActive(true);
@@ -144,13 +144,13 @@ public class MenuEventListener implements InputProcessor {
         menuHud.setLoadButtonActive(false);
         menuHud.setNewGameButtonActive(false);
         menuHud.setGalleryButtonActive(false);
-        menuHud.setOptionsButtonActive(false);
+//        menuHud.setOptionsButtonActive(false);
         menuHud.setExitButtonActive(false);
 
         menuHud.setLoadLabelScale(0.5f);
         menuHud.setNewGameLabelScale(0.5f);
         menuHud.setGalleryLabelScale(0.5f);
-        menuHud.setOptionsLabelScale(0.5f);
+//        menuHud.setOptionsLabelScale(0.5f);
         menuHud.setExitLabelScale(0.5f);
         return false;
     }

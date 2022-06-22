@@ -14,13 +14,14 @@ public class CorridorEventListener implements InputProcessor {
     private Inventory inventory;
     private MaskSelector maskSelector;
     private Hud hud;
+    Dialog dialog;
 
     private ExitConfirm exitConfirm;
     private Vector2 worldCords;
 
     private boolean cursorOnInteractive, needGlowCheck;
 
-    public CorridorEventListener(MyGdxGame game, CorridorScene corridorScene, Player player, Diary diary, Hud hud, ExitConfirm exitConfirm, Inventory inventory, MaskSelector maskSelector) {
+    public CorridorEventListener(MyGdxGame game, CorridorScene corridorScene, Player player, Diary diary, Hud hud, ExitConfirm exitConfirm, Inventory inventory, MaskSelector maskSelector, Dialog dialog) {
         this.game = game;
         this.corridorScene = corridorScene;
         this.player = player;
@@ -29,6 +30,7 @@ public class CorridorEventListener implements InputProcessor {
         this.maskSelector = maskSelector;
         this.hud = hud;
         this.exitConfirm = exitConfirm;
+        this.dialog = dialog;
         worldCords = new Vector2();
 
         cursorOnInteractive = false;
@@ -56,29 +58,25 @@ public class CorridorEventListener implements InputProcessor {
 
     @Override
     public boolean keyTyped(char character) {
-//        if(character == '4' && !Data.getPrefs().getBoolean("dialog_1")) {
-//            corridorScene.getDialogs().showDialog("dialog_1");
-//        }
         return false;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        if(!corridorScene.getDialogs().isShowDialog() && !exitConfirm.isDraw()) {
-            if(diary.isShowDiary()) {
-                if(screenX >= MyGdxGame.WIDTH/2f) {
-                    diary.setN(diary.getN()+1);
+        if (!exitConfirm.isDraw() && !diary.isShowDiary() && !dialog.getIsShowDialog() && !inventory.isShowInventory() && !maskSelector.isShowMaskSelector()) {
+            if (diary.isShowDiary()) {
+                if (screenX >= MyGdxGame.WIDTH / 2f) {
+                    diary.setN(diary.getN() + 1);
                 } else {
-                    diary.setN(diary.getN()-1);
+                    diary.setN(diary.getN() - 1);
                 }
             }
             worldCords.set(CorridorScene.getViewport1().unproject(new Vector2(screenX, screenY)));
             if (!player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() && !maskSelector.isShowMaskSelector() &&
-                    !hud.isCursorOnSmth()) {
+                    !dialog.getIsShowDialog() && !hud.isCursorOnSmth()) {
                 player.setDestination((int) worldCords.x, (int) Math.min(worldCords.y, 200));
             }
-
             //hammer
             if (checkCursorPosition(corridorScene.getItems()[5].getPosition(), corridorScene.getItems()[5].getWidth(), corridorScene.getItems()[5].getHeight())) {
                 if (MyGdxGame.cursorIsItem) {
@@ -98,7 +96,7 @@ public class CorridorEventListener implements InputProcessor {
             }
 
             //mask_anger
-            if (checkCursorPosition(corridorScene.getItems()[6].getPosition(), corridorScene.getItems()[6].getWidth(), corridorScene.getItems()[6].getHeight())) {
+            if (checkCursorPosition(corridorScene.getItems()[3].getPosition(), corridorScene.getItems()[3].getWidth(), corridorScene.getItems()[3].getHeight())) {
                 if (MyGdxGame.cursorIsItem) {
                     if (!isItemCursorPressIsCorrect("no"))
                         corridorScene.getReactions().setReaction("non-use");
@@ -106,7 +104,7 @@ public class CorridorEventListener implements InputProcessor {
                     return true;
                 }
 
-                if (!corridorScene.getItems()[6].getIsTaken()) {
+                if (!corridorScene.getItems()[3].getIsTaken()) {
                     corridorScene.getReactions().setReaction("mask", player.getMask().getCurrentMask());
                     player.setReactionName("mask");
                 }
@@ -116,8 +114,14 @@ public class CorridorEventListener implements InputProcessor {
             }
 
             //photo
-            if (corridorScene.getWindowIsBroken()) {
-                if (checkCursorPosition(corridorScene.getItems()[4].getPosition(), corridorScene.getItems()[4].getWidth(), corridorScene.getItems()[4].getHeight())) {
+            if (checkCursorPosition(corridorScene.getItems()[4].getPosition(), corridorScene.getItems()[4].getWidth(), corridorScene.getItems()[4].getHeight())) {
+                if (!corridorScene.getMeetIsDone()) {
+                    corridorScene.getReactions().setReaction("photo");
+                    player.setReactionName("photo");
+
+                    return true;
+                }
+                if (corridorScene.getWindowIsBroken()) {
                     if (MyGdxGame.cursorIsItem) {
                         if (!isItemCursorPressIsCorrect("no"))
                             corridorScene.getReactions().setReaction("non-use");
@@ -128,10 +132,9 @@ public class CorridorEventListener implements InputProcessor {
                     corridorScene.getReactions().setReaction("photo");
                     player.setReactionName("photo");
                     return true;
-                } else {
-                    corridorScene.getReactions().cancelReaction();
                 }
-            }
+            } else
+                corridorScene.getReactions().cancelReaction();
 
             //rubbish_bin
             if (checkCursorPosition(corridorScene.getItems()[2].getPosition(), corridorScene.getItems()[2].getWidth(), corridorScene.getItems()[2].getHeight())) {
@@ -212,18 +215,16 @@ public class CorridorEventListener implements InputProcessor {
             if (worldCords.x >= 1830 && worldCords.x <= 2230 && worldCords.y >= 510 && worldCords.y <= 800) {
                 if (MyGdxGame.cursorIsItem) {
                     if (isItemCursorPressIsCorrect("hammerGlow") && !corridorScene.getWindowIsBroken()) {
-                            if (player.getMask().getCurrentMask() == "anger") {
-                                corridorScene.setWindowIsBroken(true);
-                                player.setReactionName("hammer_honor_board");
-                            }
-                            corridorScene.getReactions().setReaction("hammer_honor_board", player.getMask().getCurrentMask());
-                    }
-                    else if (!isItemCursorPressIsCorrect("hammerGlow") || corridorScene.getWindowIsBroken())
+                        if (player.getMask().getCurrentMask() == "anger") {
+                            corridorScene.setWindowIsBroken(true);
+                            player.setReactionName("hammer_honor_board");
+                        }
+                        corridorScene.getReactions().setReaction("hammer_honor_board", player.getMask().getCurrentMask());
+                    } else if (!isItemCursorPressIsCorrect("hammerGlow") || corridorScene.getWindowIsBroken())
                         corridorScene.getReactions().setReaction("non-use");
 
                     MyGdxGame.changeCursor("simple");
-                }
-                else if (!corridorScene.getWindowIsBroken()) {
+                } else if (!corridorScene.getWindowIsBroken()) {
                     corridorScene.getReactions().setReaction("honor_board", player.getMask().getCurrentMask());
                     player.setReactionName("honor_board");
                 }
@@ -270,27 +271,41 @@ public class CorridorEventListener implements InputProcessor {
                 corridorScene.getReactions().setReaction("room_door_3", player.getMask().getCurrentMask());
                 player.setReactionName("room_door_3");
             }
-
-            if (checkCursorPosition(hud.getBagPosition(), hud.getBagWidth(), hud.getBagHeight())) {
-                hud.setTouchedDownBag(true);
-            }
-            if (checkCursorPosition(hud.getDiaryPosition(), hud.getDiaryWidth(), hud.getDiaryHeight())) {
-                hud.setTouchedDownDiary(true);
-            }
-            if (checkCursorPosition(hud.getMaskPosition(), hud.getMaskWidth(), hud.getMaskHeight())) {
-                hud.setTouchedDownMask(true);
-            }
-            if (checkCursorPosition(hud.getPhotoPosition(), hud.getPhotoWidth(), hud.getPhotoHeight())) {
-                hud.setTouchedDownPhoto(true);
-            }
         }
+        if (checkCursorPosition(hud.getBagPosition(), hud.getBagWidth(), hud.getBagHeight())) {
+            hud.setTouchedDownBag(true);
+        }
+        if (checkCursorPosition(hud.getDiaryPosition(), hud.getDiaryWidth(), hud.getDiaryHeight())) {
+            hud.setTouchedDownDiary(true);
+        }
+        if (checkCursorPosition(hud.getMaskPosition(), hud.getMaskWidth(), hud.getMaskHeight())) {
+            hud.setTouchedDownMask(true);
+        }
+        if (checkCursorPosition(hud.getPhotoPosition(), hud.getPhotoWidth(), hud.getPhotoHeight())) {
+            hud.setTouchedDownPhoto(true);
+        }
+
         if (maskSelector.isShowMaskSelector()) {
             checkMaskPress();
         }
-        if(corridorScene.getDialogs().isShowDialog()) {
-            corridorScene.getDialogs().nextText();
+
+        //Dialog_form
+        if (dialog.getIsShowDialog()) {
+            if (!dialog.getIsAnswerForm())
+                dialog.nextDialogPart();
+            else {
+                if (dialog.getIsShowDialog() && dialog.getIsAnswerForm()) {
+                    for (int i = 0; i < dialog.getEmoIconPostions().length; i++)
+                        if (checkCursorPosition(dialog.getEmoIconPostions()[i], 1221, 81)) {
+                            dialog.phraseClicked(i);
+                            return true;
+                        }
+                }
+            }
         }
-        if(exitConfirm.isDraw()) {
+
+        //Exit_menu
+        if (exitConfirm.isDraw()) {
             if (exitConfirm.isDraw() && checkCursorPosition(exitConfirm.getLeftButtonPosition(), exitConfirm.getLeftButtonWidth(), exitConfirm.getLeftButtonHeight())) {
                 exitConfirm.setTouchedLeftButton(true);
                 return true;
@@ -301,8 +316,9 @@ public class CorridorEventListener implements InputProcessor {
             }
         }
 
+        //Inventory
         if (inventory.isShowInventory()) {
-            for (InventoryItem invItem: inventory.getInventoryItems()) {
+            for (InventoryItem invItem : inventory.getInventoryItems()) {
                 if (checkCursorPosition(invItem.getPosition(), inventory.getCellWidth(), inventory.getCellHeight())
                         && corridorScene.getItems()[invItem.getID()].getIsTaken()) {
                     MyGdxGame.changeCursor("hammer");
@@ -312,8 +328,7 @@ public class CorridorEventListener implements InputProcessor {
                     corridorScene.noiseBackground.setIsNoise(!corridorScene.noiseBackground.getIsNoise());
                     inventory.setShowInventory(!inventory.isShowInventory());
                     return true;
-                }
-                else continue;
+                } else continue;
             }
         }
 
@@ -327,24 +342,24 @@ public class CorridorEventListener implements InputProcessor {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         worldCords.set(CorridorScene.getViewport1().unproject(new Vector2(screenX, screenY)));
-        if(!maskSelector.isShowMaskSelector() && !diary.isShowDiary() && !player.getWalk() && hud.isTouchedDownBag() && checkCursorPosition(hud.getBagPosition(),
+        if (!dialog.getIsShowDialog() && !maskSelector.isShowMaskSelector() && !diary.isShowDiary() && !player.getWalk() && hud.isTouchedDownBag() && checkCursorPosition(hud.getBagPosition(),
                 hud.getBagWidth(), hud.getBagHeight())) {
             hud.setTouchedDownBag(false);
             corridorScene.noiseBackground.setIsNoise(!corridorScene.noiseBackground.getIsNoise());
             inventory.setShowInventory(!inventory.isShowInventory());
         }
-        if(!maskSelector.isShowMaskSelector() && !inventory.isShowInventory() && hud.isTouchedDownDiary() && !player.getWalk() && checkCursorPosition(hud.getDiaryPosition(),
+        if (!dialog.getIsShowDialog() && !maskSelector.isShowMaskSelector() && !inventory.isShowInventory() && hud.isTouchedDownDiary() && !player.getWalk() && checkCursorPosition(hud.getDiaryPosition(),
                 hud.getDiaryWidth(), hud.getDiaryHeight())) {
             hud.setTouchedDownDiary(false);
             diary.setShowDiary(!diary.isShowDiary());
         }
-        if(!inventory.isShowInventory() && !diary.isShowDiary() && !player.getWalk() && hud.isTouchedDownMask() && checkCursorPosition(hud.getMaskPosition(),
+        if (!dialog.getIsShowDialog() && !inventory.isShowInventory() && !diary.isShowDiary() && !player.getWalk() && hud.isTouchedDownMask() && checkCursorPosition(hud.getMaskPosition(),
                 hud.getMaskWidth(), hud.getMaskHeight())) {
             hud.setTouchedDownMask(false);
             corridorScene.darkBackground.setIsDark(!corridorScene.darkBackground.getIsDark());
             maskSelector.setShowMaskSelector(!maskSelector.isShowMaskSelector());
         }
-        if(hud.isTouchedDownPhoto() && checkCursorPosition(hud.getPhotoPosition(), hud.getPhotoWidth(), hud.getPhotoHeight())) {
+        if (hud.isTouchedDownPhoto() && checkCursorPosition(hud.getPhotoPosition(), hud.getPhotoWidth(), hud.getPhotoHeight())) {
             hud.setTouchedDownPhoto(false);
         }
         hud.setTouchedDownBag(false);
@@ -367,17 +382,17 @@ public class CorridorEventListener implements InputProcessor {
             checkMaskSelectorMove();
 
         //hammer
-        if(!corridorScene.getItems()[5].getIsTaken() && checkCursorPosition(corridorScene.getItems()[5].getPosition(),corridorScene.getItems()[5].getWidth(),
+        if (!corridorScene.getItems()[5].getIsTaken() && checkCursorPosition(corridorScene.getItems()[5].getPosition(), corridorScene.getItems()[5].getWidth(),
                 corridorScene.getItems()[5].getHeight())) {
             if (!MyGdxGame.cursorIsItem && !MyGdxGame.curIsChanged && !player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() &&
-                    !hud.isCursorOnSmth()) {
+                    !hud.isCursorOnSmth() && !dialog.getIsShowDialog()) {
                 MyGdxGame.changeCursor("hand");
                 return true;
             }
         }
         //flower_with_key
         else if (worldCords.x >= 1985 && worldCords.x <= 2055 && worldCords.y >= 210 && worldCords.y <= 420) {
-            if (!player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() && !hud.isCursorOnSmth()) {
+            if (!player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() && !hud.isCursorOnSmth() && !dialog.getIsShowDialog()) {
                 if (MyGdxGame.cursorIsItem)
                     setCursorGlow(true);
                 else if (corridorScene.getKeyIsAvailable() && !MyGdxGame.curIsChanged)
@@ -386,9 +401,9 @@ public class CorridorEventListener implements InputProcessor {
             }
         }
         //mask_anger
-        else if (!corridorScene.getItems()[6].getIsTaken() && checkCursorPosition(corridorScene.getItems()[6].getPosition(), corridorScene.getItems()[6].getWidth(),
-                corridorScene.getItems()[6].getHeight())) {
-            if (!player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() && !hud.isCursorOnSmth())
+        else if (!corridorScene.getItems()[3].getIsTaken() && checkCursorPosition(corridorScene.getItems()[3].getPosition(), corridorScene.getItems()[3].getWidth(),
+                corridorScene.getItems()[3].getHeight())) {
+            if (!player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() && !hud.isCursorOnSmth() && !dialog.getIsShowDialog())
                 if (MyGdxGame.cursorIsItem)
                     setCursorGlow(true);
                 else if (!MyGdxGame.curIsChanged)
@@ -396,53 +411,63 @@ public class CorridorEventListener implements InputProcessor {
             return true;
         }
         //photo
-        else if (!corridorScene.getItems()[4].getIsTaken() && checkCursorPosition(corridorScene.getItems()[4].getPosition(), corridorScene.getItems()[4].getWidth(),
-                corridorScene.getItems()[4].getHeight()) && corridorScene.getWindowIsBroken()) {
-            if (!player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() && !hud.isCursorOnSmth())
+        else if (checkCursorPosition(corridorScene.getItems()[4].getPosition(), corridorScene.getItems()[4].getWidth(),
+                corridorScene.getItems()[4].getHeight())) {
+            if (!player.getHit() && !player.getTake() && !diary.isShowDiary() && !inventory.isShowInventory() && !hud.isCursorOnSmth() && !dialog.getIsShowDialog())
                 if (MyGdxGame.cursorIsItem)
                     setCursorGlow(true);
-                else if (!MyGdxGame.curIsChanged)
+                else if (!MyGdxGame.curIsChanged && (!corridorScene.getMeetIsDone() || corridorScene.getWindowIsBroken()))
                     MyGdxGame.changeCursor("hand");
             return true;
-        }
-        else if (MyGdxGame.curIsChanged && !MyGdxGame.cursorIsItem) {
+        } else if (MyGdxGame.curIsChanged && !MyGdxGame.cursorIsItem) {
             MyGdxGame.changeCursor("simple");
         }
 
-          if(checkCursorPosition(hud.getBagPosition(), hud.getBagWidth(), hud.getBagHeight())) {
+        if (checkCursorPosition(hud.getBagPosition(), hud.getBagWidth(), hud.getBagHeight())) {
             hud.setCursorOnBag(true);
             return true;
         }
-        if(checkCursorPosition(hud.getDiaryPosition(), hud.getDiaryWidth(), hud.getDiaryHeight())) {
+        if (checkCursorPosition(hud.getDiaryPosition(), hud.getDiaryWidth(), hud.getDiaryHeight())) {
             hud.setCursorOnDiary(true);
             return true;
         }
-        if(checkCursorPosition(hud.getMaskPosition(), hud.getMaskWidth(), hud.getMaskHeight())) {
+        if (checkCursorPosition(hud.getMaskPosition(), hud.getMaskWidth(), hud.getMaskHeight())) {
             hud.setCursorOnMask(true);
             return true;
         }
-        if(checkCursorPosition(hud.getPhotoPosition(), hud.getPhotoWidth(), hud.getPhotoHeight())) {
+        if (checkCursorPosition(hud.getPhotoPosition(), hud.getPhotoWidth(), hud.getPhotoHeight())) {
             hud.setCursorOnPhoto(true);
             return true;
         }
-        if(checkCursorPosition(exitConfirm.getLeftButtonPosition(), exitConfirm.getLeftButtonWidth(), exitConfirm.getLeftButtonHeight()))  {
+        if (checkCursorPosition(exitConfirm.getLeftButtonPosition(), exitConfirm.getLeftButtonWidth(), exitConfirm.getLeftButtonHeight())) {
             exitConfirm.setCursorOnLeftButton(true);
             return true;
         }
-        if(checkCursorPosition(exitConfirm.getRightButtonPosition(), exitConfirm.getRightButtonWidth(), exitConfirm.getRightButtonHeight()))  {
+        if (checkCursorPosition(exitConfirm.getRightButtonPosition(), exitConfirm.getRightButtonWidth(), exitConfirm.getRightButtonHeight())) {
             exitConfirm.setCursorOnRightButton(true);
             return true;
         }
 
         //Inventory
-        for (InventoryItem invItem: inventory.getInventoryItems()) {
-            if (inventory.isShowInventory() && checkCursorPosition(invItem.getPosition(), inventory.getCellWidth(), inventory.getCellHeight())
-                    && corridorScene.getItems()[invItem.getID()].getIsTaken()) {
-                inventory.setCellLightPosition(invItem.getPosition());
-                inventory.setCursorOnIcon(true);
-                return true;
+        if (inventory.isShowInventory()) {
+            for (InventoryItem invItem : inventory.getInventoryItems()) {
+                if (checkCursorPosition(invItem.getPosition(), inventory.getCellWidth(), inventory.getCellHeight())
+                        && corridorScene.getItems()[invItem.getID()].getIsTaken()) {
+                    inventory.setCellLightPosition(invItem.getPosition());
+                    inventory.setCursorOnIcon(true);
+                    return true;
+                } else continue;
             }
-            else continue;
+        }
+
+        //Dialog
+        if (dialog.getIsShowDialog() && dialog.getIsAnswerForm()) {
+            for (int i = 0; i < dialog.getEmoIconPostions().length; i++)
+                if (checkCursorPosition(dialog.getEmoIconPostions()[i], 1221, 81) && !dialog.getAnswers()[i].getText().isEmpty()) {
+                    dialog.setDialogIndex(i);
+                    return true;
+                }
+            dialog.setDialogIndex(-1);
         }
 
         if (needGlowCheck)
@@ -464,7 +489,7 @@ public class CorridorEventListener implements InputProcessor {
     }
 
     private boolean checkCursorPosition(Vector2 position, float width, float height) {
-        if(worldCords.x >= position.x && worldCords.x <= position.x + width && worldCords.y >= position.y && worldCords.y <= position.y + height)
+        if (worldCords.x >= position.x && worldCords.x <= position.x + width && worldCords.y >= position.y && worldCords.y <= position.y + height)
             return true;
         else return false;
     }
@@ -480,7 +505,7 @@ public class CorridorEventListener implements InputProcessor {
 
         maskSelector.setActiveBtn(-1);
 
-        return  false;
+        return false;
     }
 
     private boolean checkMaskPress() {
@@ -520,8 +545,7 @@ public class CorridorEventListener implements InputProcessor {
                 return true;
 
             return false;
-        }
-        else return true;
+        } else return true;
     }
 
     private void setCursorGlow(boolean b) {
@@ -529,8 +553,7 @@ public class CorridorEventListener implements InputProcessor {
             MyGdxGame.curIsChanged = false;
             MyGdxGame.changeCursor(MyGdxGame.currentCursor + "Glow");
             cursorOnInteractive = true;
-        }
-        else
+        } else
             cursorOnInteractive = false;
         if (!cursorOnInteractive && MyGdxGame.cursorIsItem) {
             if (MyGdxGame.currentCursor.indexOf("G") != -1) {

@@ -32,6 +32,18 @@ public class Mask {
         return currentMask;
     }
 
+    public int getMaskIndex() {
+        switch (currentMask) {
+            case "sad":
+                return 0;
+            case "anger":
+                return 1;
+
+            default:
+                return  -1;
+        }
+    }
+
     public void takeMask(String maskName) {
         switch (maskName){
             case "anger":
