@@ -199,11 +199,12 @@ public class Player {
 
             if (position.x + (width / 2f) - destination.x <= 0) {
                 if (speed.x > 0) {
-                    if (speed0.x == 0) {
-                        position.add(speed0.x * deltaTime, speed0.y * deltaTime);
-                    } else {
-                        position.add(speed.x * deltaTime, speed.y * deltaTime);
-                    }
+//                    if (speed0.x == 0) {
+//                        position.add(speed0.x * deltaTime, speed0.y * deltaTime);
+//                    } else {
+//                        position.add(speed.x * deltaTime, speed.y * deltaTime);
+//                    }
+                    position.add(speed.x * deltaTime, speed.y * deltaTime);
                 } else {
                     if (!reactions.isReactionEmpty()) {
                         reactions.setDraw(true);
@@ -291,11 +292,11 @@ public class Player {
 
             if (position.x + (width / 2f) - destination.x >= 0) {
                 if (speed.x < 0) {
-                    if (speed0.x == 0) {
-                        position.add(speed0.x * deltaTime, speed0.y * deltaTime);
-                    } else {
+//                    if (speed0.x == 0) {
+//                        position.add(speed0.x * deltaTime, speed0.y * deltaTime);
+//                    } else {
                         position.add(speed.x * deltaTime, speed.y * deltaTime);
-                    }
+//                    }
                 } else {
                     if (!reactions.isReactionEmpty()) {
                         reactions.setDraw(true);
@@ -595,14 +596,17 @@ public class Player {
         actionSound = false;
         reactionName = "";
         destination.set(x, y);
+//        speedBiasX
         if (position.x + (width / 2f) < x) {
-            speed.x = (float) (250 * Math.abs(position.x + (width / 2f) - destination.x) / Math.sqrt(Math.pow((position.x + (width / 2f) - destination.x), 2) + Math.pow((position.y - destination.y), 2)));
+            speed.x = (float) (250 * Math.abs(position.x + (width / 2f) - destination.x) / Math.sqrt(Math.pow((position.x + (width / 2f) - destination.x), 2)
+                    + Math.pow((position.y - destination.y), 2)));
             if (!right) {
                 setChangeDirection();
                 right = true;
             }
         } else {
-            speed.x = (float) (-250 * Math.abs(position.x + (width / 2f) - destination.x) / Math.sqrt(Math.pow((position.x + (width / 2f) - destination.x), 2) + Math.pow((position.y - destination.y), 2)));
+            speed.x = (float) (-250 * Math.abs(position.x + (width / 2f) - destination.x) / Math.sqrt(Math.pow((position.x + (width / 2f) - destination.x), 2)
+                    + Math.pow((position.y - destination.y), 2)));
             if (right) {
                 setChangeDirection();
                 right = false;

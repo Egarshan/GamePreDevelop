@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 
 public class DarkBackground {
     private static TextureRegion darkBackground;
-
     private static Vector2 position;
     private static float width, height;
 

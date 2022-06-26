@@ -31,8 +31,8 @@ public class MyGdxGame extends Game {
 		curIsChanged = false;
 		cursorIsItem = false;
 
-		Gdx.graphics.setFullscreenMode(d);
-		Gdx.graphics.setResizable(false);
+//		Gdx.graphics.setFullscreenMode(d);
+		Gdx.graphics.setResizable(true);
 		
 		batch = new SpriteBatch();
 		data = new Data();

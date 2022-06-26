@@ -10,6 +10,7 @@ public class MenuEventListener implements InputProcessor {
     private MyGdxGame game;
     private MenuHud menuHud;
 
+
     public MenuEventListener(MyGdxGame game, MenuHud menuHud) {
         this.game = game;
         this.menuHud = menuHud;

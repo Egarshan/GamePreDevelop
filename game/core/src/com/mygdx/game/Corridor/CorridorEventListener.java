@@ -33,6 +33,7 @@ public class CorridorEventListener implements InputProcessor {
         this.dialog = dialog;
         worldCords = new Vector2();
 
+
         cursorOnInteractive = false;
         needGlowCheck = true;
 
@@ -66,7 +67,7 @@ public class CorridorEventListener implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        if (!exitConfirm.isDraw() && !corridorScene.finishWindow.isDraw() && !diary.isShowDiary() && !dialog.getIsShowDialog() && !inventory.isShowInventory() && !maskSelector.isShowMaskSelector()) {
+        if (!exitConfirm.isDraw() && !corridorScene.finishWindow.isDraw() && !dialog.getIsShowDialog() && !inventory.isShowInventory() && !maskSelector.isShowMaskSelector()) {
             if (diary.isShowDiary()) {
                 if (screenX >= MyGdxGame.WIDTH / 2f) {
                     diary.setN(diary.getN() + 1);
@@ -390,7 +391,7 @@ public class CorridorEventListener implements InputProcessor {
         if (!dialog.getIsShowDialog() && !maskSelector.isShowMaskSelector() && !inventory.isShowInventory() && hud.isTouchedDownDiary() && !player.getWalk() && checkCursorPosition(hud.getDiaryPosition(),
                 hud.getDiaryWidth(), hud.getDiaryHeight()) && !corridorScene.finishWindow.isDraw()) {
             hud.setTouchedDownDiary(false);
-            diary.setShowDiary(!diary.isShowDiary());
+            diary.setShowDiary(true);
         }
         if (!dialog.getIsShowDialog() && !inventory.isShowInventory() && !diary.isShowDiary() && !player.getWalk() && hud.isTouchedDownMask() && checkCursorPosition(hud.getMaskPosition(),
                 hud.getMaskWidth(), hud.getMaskHeight()) && !corridorScene.finishWindow.isDraw()) {
